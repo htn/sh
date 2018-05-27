@@ -67,12 +67,12 @@ table#bodytable tr:hover td {
   vertical-align: middle !important;
 }
 /* Resize table */
-table#headertable th {
+table#headertable tr:first-child th {
   cursor: col-resize;
 }
-table#headertable th:nth-child(1),
-table#headertable th:nth-child(2),
-table#headertable th:nth-child(3) {
+table#headertable tr:first-child th:nth-child(1),
+table#headertable tr:first-child th:nth-child(2),
+table#headertable tr:first-child th:nth-child(3) {
   cursor: auto;
 }
 table#headertable th.resizing {

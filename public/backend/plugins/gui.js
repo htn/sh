@@ -63,14 +63,14 @@
          * set chieu cao cua body left
          * = chieu cao window - chieu cao header  chieu cao footer
          */
-        methods.setHeigtBodyLeft = function (h_w) {
+         methods.setHeigtBodyLeft = function (h_w) {
             $(".uil_body").height(h_w - (settings.h_header + settings.h_footer));
         };
         /*
          * Set chieu cao body right (phan chua content chinh)
          * 20 la 10 padding top va 10 padding left cua body
          */
-        methods.setHeigtBodyRight = function (h_w) {
+         methods.setHeigtBodyRight = function (h_w) {
             var uir_body = h_w - (settings.h_header + settings.h_footer) - 20;
             $(".uir_body").height(uir_body);
             if ($('#ui_form').length > 0 && $('#ui_grid').length > 0) {
@@ -101,36 +101,37 @@
         methods.gridScrollAndResize = function () {
             var pressed = false;
             var start = undefined;
-            var startX, startWidth, minWidth;
-            var hw = $("#headertable").outerWidth();
-            var icell = 0;
-            $("table#headertable th").mousedown(function (e) {
-                icell = $("table th").index($(this));
-                if (icell > 2) {
+            var start_x, start_width_column, min_width_column;
+            var start_width_table = $("#headertable").outerWidth();
+            var index_cell = 0;
+            $("table#headertable tr:first th").mousedown(function (e) {       
+                index_cell = $(this).index();
+                if (index_cell > 2) {
                     start = $(this);
                     pressed = true;
-                    startX = e.pageX;
-                    minWidth = parseInt($(this).css('min-width'));
-                    startWidth = $(this).outerWidth();
-                    hw = $("#headertable").outerWidth();
+                    start_x = e.pageX;
+                    min_width_column = parseInt($(this).css('min-width')) ; // chieu rong toi thieu cua cot se resize
+                    start_width_column = $(this).outerWidth() ; // width cua cot se resize
+                    start_width_table = $("#headertable").outerWidth();// width cua ca table
                     $(start).addClass("resizing");
-                    $(start).addClass("noSelect");
+                    $(start).addClass("noSelect");                 
                 }
             });
             $(document).mousemove(function (e) {
-                if (pressed) {
-                    var plus = (e.pageX - startX);
-                    var sum = startWidth + plus - 11; // 11 la sum padding left+right+border_right              
-                    if (sum < (minWidth - 11) && plus < 0) {
-                        return false;
-                        sum = minWidth - 11;
-                        plus = 0;
+                if (pressed) {                  
+                    var move_length = (e.pageX - start_x); // khoang cach di chuyen chuot
+                    var new_width_column = start_width_column + move_length; // chieu rong cua cot sau resize                
+                    if (new_width_column < min_width_column && move_length < 0) {
+                        new_width_column = min_width_column;
+                        move_length = min_width_column - start_width_column;
                     }
-                    $(start).width(sum);
-                    $("#headertable").width(hw + plus);
-                    $("#bodytable").width(hw + plus);
-                    $("#bodytable > thead > tr:first th:nth-child(" + (icell + 1) + ")").width(sum);
-                    $("#bodytable > tbody > tr:first td:nth-child(" + (icell + 1) + ")").width(sum);
+                    var new_width_table = start_width_table + move_length;                    
+                    $(start).css('width', new_width_column);
+                    $("#headertable").css('width', new_width_table+'px');
+                    $("#bodytable").css('width', new_width_table+'px');                   
+                    $("#bodytable > thead > tr:first th:nth-child(" + (index_cell + 1) + ")").css('width', new_width_column+'px');
+                    $("#bodytable > tbody > tr:first td:nth-child(" + (index_cell + 1) + ")").css('width', new_width_column+'px');
+                    
                 }
             });
             $(document).mouseup(function () {

@@ -1,7 +1,12 @@
 @extends('backend.dashboard')
 
 @section('content')
+<link rel="stylesheet" type="text/css" media="all" href="{{asset('plugins/daterangepicker/daterangepicker.css')}}" />
+<link href="{{asset('backend/plugins/multiple-select/multiple-select.css')}}" rel="stylesheet">
 <link href="{{asset('backend/css/form.css')}}" rel="stylesheet" type="text/css" />
+<script src="{{asset('backend/plugins/multiple-select/multiple-select.js')}}"></script>
+<script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
 <script type="text/javascript">
     $(window).on('hashchange', function () {
         if (window.location.hash) {
@@ -28,21 +33,98 @@
             console.log('open modal');
             $("#addNewModal").modal("show");
         });
+        $("#filter-groupid").multipleSelect({
+            placeholder: "Select groups",
+            filter: true,
+            width: '100%'
+        }).multipleSelect("uncheckAll");
+        $("#headertable").on("click", ".sort_col", function () {
+            var me = $(this);
+            if (me.hasClass("sort_asc")) {
+                $(".sort_col").removeClass("sort_desc").removeClass("sort_asc");
+                me.removeClass("sort_asc").addClass("sort_desc");
+            } else {
+                $(".sort_col").removeClass("sort_desc").removeClass("sort_asc");
+                me.removeClass("sort_desc").addClass("sort_asc");
+            }
+        });
+        $('#search').click(function(){
+            var data = getSearch(false);
+            var sort = find_sort(false);
+            console.log(sort);
+            console.log(data);
+        });
+        $('#filter-updated_at').daterangepicker({
+            autoApply: true,
+            timePicker: true,
+            singleDatePicker: true,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+              format: 'MM/DD/YYYY hh:mm A'
+          }
+      });
     });
     function getData(page) {
+        var data = getSearch(true);
+        var sort = find_sort(true);
         $.ajax({
-            url: '?page=' + page,
+            url: '?page=' + page + '&search=' + data + '&sort=' + sort,
             type: "get"
         }).done(function (data) {
             var obj = JSON.parse(data);
             $('#body_grid').html(obj.l);
-            $('#pagination').html(obj.p);
-            // console.log(data);
-            //$("#body_grid").empty().html(data);
+            $('#pagination').html(obj.p);           
             location.hash = page;
         }).fail(function (jqXHR, ajaxOptions, thrownError) {
             alert('No response from server');
         });
+    }
+    function find_sort(return_string) {
+        var obj = {};
+        $('.sort_col').each(function (i) {
+            if ($(this).hasClass("sort_asc")) {
+                obj[$(this).attr("sort")] = 'ASC';
+                return obj;
+            } else if ($(this).hasClass("sort_desc")) {
+                obj[$(this).attr("sort")] = 'DESC';
+                return obj;
+            }
+        });
+        if(return_string) {
+            return JSON.stringify(obj);
+        }
+        return obj;
+    }
+    function getSearch(return_string) {
+        var obj = {};
+        $('.filter-data', '#headertable').each(function () {          
+            var tagName = $(this).prop("tagName").toLowerCase();
+            if(tagName==='input' || tagName==='select' || tagName === 'textarea') {
+                var type = $(this).attr('mtype');
+                var id = $(this).attr("id");
+                var val = '';
+                if (type === 'select') {
+                    val = $('#'+id).multipleSelect('getSelects').join();
+                } else if (type === 'datetime') {
+                    val = $('#'+id).val();
+                } else if (type === 'date') {
+                    val = $('#'+id).val();
+                } else if (type === 'time') {
+                    val = $('#'+id).val();
+                } else if (type === 'text') {
+                    val = $('#'+id).val();
+                } else {
+                    val = $('#'+id).val();
+                }
+                id = id.split('-')[1];
+                obj[id] = val;
+            }            
+        });
+        if(return_string) {
+            return JSON.stringify(obj);
+        }
+        return obj;
     }
 </script>
 <div class="box ui_grid clearfix" id="ui_grid">
@@ -64,13 +146,13 @@
                             <th class="ckrow"><input type="checkbox" name="cka" id="cka"></th>
                             <th class="funcrow"></th>
                             <th class="funcrow"></th>
-                            <?php echo $header[0]; ?>
+                            <?php echo $header[1]; ?>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <?php echo $header[1]; ?>
+                            <?php echo $header[2]; ?>
                         </tr>
                     </thead>
                 </table>

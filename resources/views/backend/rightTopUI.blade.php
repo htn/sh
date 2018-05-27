@@ -18,7 +18,7 @@
             </ul>
         </li>
         <li><a href="#">Thông báo</a></li>
-        <li><a href="#"><img style="vertical-align: middle;" src="{{ asset('images/backend/huy_avatar.png') }}"></a>
+        <li><a href="#"><img style="vertical-align: middle;" src="{{ asset('backend/images/huy_avatar.png') }}"></a>
             <ul class="dropdown">
                 <li><a href="/myprofile.html">Thông tin cá nhân</a></li>
                 <li><a href="#">Công việc cần làm</a></li>
