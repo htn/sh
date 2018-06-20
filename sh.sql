@@ -85,7 +85,8 @@ INSERT INTO `sys_user` (`id`, `username`, `password`, `groupid`, `firstname`, `l
 	(28, 'nv194', '12345', 1, 'Nhân', 'Viên 194', 'conduongsang.info@gmail.com', '0988656070', '0988656070', 'Thủ Đức HCM Việt Nam', 'Nhân viên lập trình', 'huy.png', 1, 1, 1, '2018-06-20 15:30:33', '2018-06-20 15:30:36', 0),
 	(29, 'nv1104', '12345', 1, 'Nhân', 'Viên 1104', 'conduongsang.info@gmail.com', '0988656070', '0988656070', 'Thủ Đức HCM Việt Nam', 'Nhân viên lập trình', 'huy.png', 1, 1, 1, '2018-06-20 15:30:33', '2018-06-20 15:30:36', 0),
 	(30, 'nv1114', '12345', 1, 'Nhân', 'Viên 1114', 'conduongsang.info@gmail.com', '0988656070', '0988656070', 'Thủ Đức HCM Việt Nam', 'Nhân viên lập trình', 'huy.png', 1, 1, 1, '2018-06-20 15:30:33', '2018-06-20 15:30:36', 0);
-/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
+
+	/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
