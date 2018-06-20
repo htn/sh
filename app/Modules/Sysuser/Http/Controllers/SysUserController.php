@@ -12,14 +12,16 @@ class SysUserController extends Controller {
     private $_cols = array(
         'id' => array('width' => 200, 'align' => 'left', 'filter' => 'id', 'type' => ''),
         'username' => array('width' => 200, 'align' => 'left', 'filter' => 'username', 'type' => ''),
-        'groupid' => array('width' => 200, 'align' => 'left', 'filter' => 'name', 'type' => 'select', 'array' => 'arr_group'),
-        'email' => array('width' => 200, 'align' => 'left', 'filter' => 'title', 'type' => ''),
+        'fullname' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => ''),
+        'groupid' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => 'select', 'array' => 'arr_group'),
+        'groupname' => array('width' => 200, 'align' => 'left', 'filter' => 'groupname', 'type' => ''),        
+        'email' => array('width' => 300, 'align' => 'left', 'filter' => 'title', 'type' => ''),
         'phone_number' => array('width' => 230, 'align' => 'left', 'filter' => 'phone_number', 'type' => ''),
         'address' => array('width' => 200, 'align' => 'left', 'filter' => 'address', 'type' => ''),     
         'description' => array('width' => 200, 'align' => 'left', 'filter' => 'title', 'type' => ''),
-        'display' => array('width' => 200, 'align' => 'center', 'filter' => 'display', 'type' => 'status'),
-        'updated_at' => array('width' => 200, 'align' => 'center', 'filter' => 'time_create', 'type' => 'datetime'),
-        'updated_at' => array('width' => 200, 'align' => 'center', 'filter' => 'time_update', 'type' => 'datetime')
+        'status' => array('width' => 200, 'align' => 'center', 'filter' => 'status', 'type' => 'status'),
+        'user_created' => array('width' => 200, 'align' => 'center', 'filter' => 'user_created', 'type' => ''),
+        'time_created' => array('width' => 200, 'align' => 'center', 'filter' => 'time_created', 'type' => 'datetime')
     );
     private $arr_group = array();
 
@@ -27,14 +29,12 @@ class SysUserController extends Controller {
         $this->arr_group = $this->getKVArr('sys_group', 'id', 'name');
     }
 
-    public function index(Request $request) {
-        // $items = User::paginate(25);
-        $items = DB::table('users')
-        ->join('sys_group', 'sys_group.id', '=', 'users.groupid')
-        ->select('users.*', 'sys_group.name')
+    public function index(Request $request) {   
+        $items = DB::table('sys_user')
+        ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
+        ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname')
         ->paginate(15);
-        $cols = $this->_cols;
-        //$cols = Users::columns();         
+        $cols = $this->_cols;   
         if ($request->ajax()) {
             $header = $this->create_header_table(false);
             $data = json_encode(array(
