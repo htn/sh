@@ -19,7 +19,7 @@ table#headertable, table#headertable td, table#headertable th,
 table#bodytable, table#bodytable td, table#bodytable th {
   border: 1px solid #ddd;
   padding: 5px;
-  vertical-align: middle;
+  vertical-align: middle;  
 }
 table#headertable th, table#bodytable th {
   border-top: none !important;

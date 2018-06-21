@@ -34,7 +34,7 @@ class SysUserController extends Controller {
         ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
         ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname')
         ->paginate(15);
-        $cols = $this->_cols;   
+        $cols = $this->_cols;
         if ($request->ajax()) {
             $header = $this->create_header_table(false);
             $data = json_encode(array(
@@ -65,7 +65,7 @@ class SysUserController extends Controller {
                     }
                     $field = '<select id="'.$id_filter.'" class="filter-data" mtype="'.$type.'">'.$option.'</select>';
                 } else {
-                    $field = '<input type="text" id="'.$id_filter.'" mtype="'.$type.'" class="form-control filter-data">';
+                    $field = '<input type="text" id="'.$id_filter.'" mtype="'.$type.'" class="form-control form-control-sm filter-data">';
                 }
                 $header_search .= '<th class="hdcell" style="min-width: ' . $val['width'] . 'px">'.$field.'</th>';
                 $header_resize .= '<th class="hdcell" style="min-width: ' . $val['width'] . 'px"></th>';

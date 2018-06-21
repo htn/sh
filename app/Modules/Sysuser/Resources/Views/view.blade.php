@@ -54,16 +54,16 @@
             console.log(sort);
             console.log(data);
         });
-        $('#filter-updated_at').daterangepicker({
+        $('#filter-time_created').daterangepicker({
             autoApply: true,
             timePicker: true,
             singleDatePicker: true,
             startDate: moment().startOf('hour'),
             endDate: moment().startOf('hour').add(32, 'hour'),
             locale: {
-              format: 'MM/DD/YYYY hh:mm A'
-          }
-      });
+                format: 'MM/DD/YYYY hh:mm A'
+            }
+        });
     });
     function getData(page) {
         var data = getSearch(true);
@@ -127,10 +127,41 @@
         return obj;
     }
 </script>
+
+<style type="text/css">
+.filter-data {
+    border-radius: 0;
+}
+.ms-choice {
+    height: 33px;        
+    border-radius: 0;
+    border-color: #ced4da;
+    outline: none;
+}
+.ms-choice span {
+    top: 3px;
+}
+.ms-choice div {
+    top: 4px;
+}
+.ms-drop {
+    border-radius: 0;
+    border-color: #ced4da;
+}
+.ms-drop>ul>li>label>input{
+    margin-right: 5px;
+}
+</style>
+
 <div class="box ui_grid clearfix" id="ui_grid">
     <div class="box_header clearfix" id="grid_header">
         <div class="float-left box_title">Data Grid</div>
         <div class="float-right" style="padding-top: 4px;">
+            <div class="btn-group">
+                <button type="button" class="btn">Apple</button>
+                <button type="button" class="btn">Samsung</button>
+                <button type="button" class="btn">Sony</button>
+            </div>
             <a href="#" id="refresh_grid" class="btn btn-refresh">Refresh</a>
             <a href="#" id="search" class="btn btn-search">Search</a>
             <a href="#" id="add_btn" class="btn btn-add">Add</a>
