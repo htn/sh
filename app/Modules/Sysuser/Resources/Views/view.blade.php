@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" media="all" href="{{asset('plugins/daterangepicker/daterangepicker.css')}}" />
 <link href="{{asset('backend/plugins/multiple-select/multiple-select.css')}}" rel="stylesheet">
 <link href="{{asset('backend/css/form.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('backend/css/button.css')}}" rel="stylesheet" type="text/css" />
 <script src="{{asset('backend/plugins/multiple-select/multiple-select.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
@@ -151,21 +152,19 @@
 .ms-drop>ul>li>label>input{
     margin-right: 5px;
 }
+
 </style>
 
 <div class="box ui_grid clearfix" id="ui_grid">
     <div class="box_header clearfix" id="grid_header">
         <div class="float-left box_title">Data Grid</div>
-        <div class="float-right" style="padding-top: 4px;">
-            <div class="btn-group">
-                <button type="button" class="btn">Apple</button>
-                <button type="button" class="btn">Samsung</button>
-                <button type="button" class="btn">Sony</button>
-            </div>
-            <a href="#" id="refresh_grid" class="btn btn-refresh">Refresh</a>
-            <a href="#" id="search" class="btn btn-search">Search</a>
-            <a href="#" id="add_btn" class="btn btn-add">Add</a>
-            <a href="#" id="deletes_btn" class="btn btn-delete">Delete</a>            
+        <div class="float-right">
+            <ul class="button-group">
+                <li><button id="refresh_grid" class="button"><img src="{{asset('backend/images/refresh.png')}}" /> Refresh</button></li>
+                <li><button id="search"  class="button"><img src="{{asset('backend/images/search.png')}}" /> Search</button></li>
+                <li><button id="add_btn" class="button"><img src="{{asset('backend/images/create.png')}}" /> Add</button></li>
+                <li><button id="deletes_btn" class="button"><img src="{{asset('backend/images/delete.png')}}" /> Delete</button></li>
+            </ul>              
         </div>
     </div>
     <div class="box_body body_grid" id="grid_body">

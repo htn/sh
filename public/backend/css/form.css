@@ -149,9 +149,7 @@ CSS form and data grid
   padding: 5px 15px;
   font-weight: bold;
 }
-.box_title {
-  padding-top: 7px;
-  padding-bottom: 5px;
+.box_title {  
   color: #000;
   font-weight: normal;
   text-transform: capitalize;
