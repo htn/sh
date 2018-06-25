@@ -7,7 +7,7 @@
   display: inline-block;
   *display: inline;
   zoom: 1;  
-  padding: 6px 20px;
+  padding: 7px 15px;
   margin: 0;
   cursor: pointer;
   border: 1px solid #bbb;
@@ -36,6 +36,10 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.button img {
+  margin-right: 3px;
 }
 
 .button:hover {

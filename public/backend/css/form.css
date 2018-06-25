@@ -19,7 +19,7 @@ table#headertable, table#headertable td, table#headertable th,
 table#bodytable, table#bodytable td, table#bodytable th {
   border: 1px solid #ddd;
   padding: 5px;
-  vertical-align: middle;  
+  vertical-align: middle;
 }
 table#headertable th, table#bodytable th {
   border-top: none !important;
@@ -34,13 +34,16 @@ table#bodytable, table#bodytable td:last-child, table#bodytable th:last-child {
   border-right: none !important;
 }
 table#bodytable > tbody > tr:nth-child(even) td {
-  background: #f9f9f9 !important;
+  background: #f9f9f9;
 }
 table#bodytable > tbody > tr:nth-child(odd) td {
-  background: #FFF !important;
+  background: #FFF;
 }
 table#bodytable tr:hover td {
-  background: #f7dcdf !important;
+  background: rgba(0, 156, 215, 0.2) !important;
+}
+table#bodytable tr td:hover {
+  background: rgba(0, 156, 215, 0.2) !important;
 }
 .hdcell {
   text-align: left;

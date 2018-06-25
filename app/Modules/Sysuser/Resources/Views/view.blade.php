@@ -9,7 +9,7 @@
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
 <script type="text/javascript">
-    $(window).on('hashchange', function () {
+    /*$(window).on('hashchange', function () {
         if (window.location.hash) {
             var page = window.location.hash.replace('#', '');
             console.log(page);
@@ -19,7 +19,7 @@
                 getData(page);
             }
         }
-    });
+    });*/
     $(document).ready(function () {
         $(document).on('click', '.pagination a', function (event) {
             $('li').removeClass('active');
@@ -67,6 +67,26 @@
         });
     });
     function getData(page) {
+        var data = getSearch(true);
+        var sort = find_sort(true);
+        $.ajax({
+            method: "POST",
+            url: 'sysuser/',
+            data: {
+                page:page,
+                search:data,
+                sort:sort
+            }
+        }).done(function (data) {
+            //var obj = JSON.parse(data);
+            //$('#body_grid').html(obj.l);
+            //$('#pagination').html(obj.p);           
+            // location.hash = page;
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
+            alert('No response from server');
+        });
+    }
+    function getData1(page) {
         var data = getSearch(true);
         var sort = find_sort(true);
         $.ajax({
@@ -152,7 +172,26 @@
 .ms-drop>ul>li>label>input{
     margin-right: 5px;
 }
-
+.modal-header {
+    padding: 0.3rem 1rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.modal-header .modal-title {
+    color: #fff;
+}
+.modal-header .close {
+    padding: 1.3rem 1rem 1rem 1rem;
+}
+.modal-content {
+    border-radius: 0;
+}
+.modal-footer {
+    padding: 0.5rem 1rem;
+}
+.modal-lg {
+    max-width: 80%;
+}
 </style>
 
 <div class="box ui_grid clearfix" id="ui_grid">
@@ -160,10 +199,26 @@
         <div class="float-left box_title">Data Grid</div>
         <div class="float-right">
             <ul class="button-group">
-                <li><button id="refresh_grid" class="button"><img src="{{asset('backend/images/refresh.png')}}" /> Refresh</button></li>
-                <li><button id="search"  class="button"><img src="{{asset('backend/images/search.png')}}" /> Search</button></li>
-                <li><button id="add_btn" class="button"><img src="{{asset('backend/images/create.png')}}" /> Add</button></li>
-                <li><button id="deletes_btn" class="button"><img src="{{asset('backend/images/delete.png')}}" /> Delete</button></li>
+                <li>
+                    <button id="refresh_grid" class="button">
+                        <img src="{{asset('backend/images/refresh.png')}}" /> Refresh
+                    </button>
+                </li>
+                <li>
+                    <button id="search" class="button">
+                        <img src="{{asset('backend/images/search.png')}}" /> Search
+                    </button>
+                </li>
+                <li>
+                    <button id="add_btn" class="button">
+                        <img src="{{asset('backend/images/create.png')}}" /> Add
+                    </button>
+                </li>
+                <li>
+                    <button id="deletes_btn" class="button">
+                        <img src="{{asset('backend/images/delete.png')}}" /> Delete
+                    </button>
+                </li>
             </ul>              
         </div>
     </div>
@@ -202,23 +257,182 @@
 <div class="modal" id="addNewModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Modal Heading</h4>
+            <div class="modal-header" style="background-color: #337AB7;">
+                <h5 class="modal-title">Message</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
-            <!-- Modal body -->
             <div class="modal-body">
-                Modal body..
+                <form action="/action_page.php">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email">Information:</label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="email"></label>
+                                </div>                            
+                                <div class="col-md-9">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="remember"> Remember me
+                                    </label>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <ul class="button-group">                  
+                    <li>
+                        <button class="button">
+                            <img src="{{asset('backend/images/save.png')}}" /> Save
+                        </button>
+                    </li>
+                    <li>
+                        <button class="button" data-dismiss="modal">
+                            <img src="{{asset('backend/images/delete.png')}}" /> Close
+                        </button>
+                    </li>
+                </ul>
             </div>
-
         </div>
     </div>
 </div>
