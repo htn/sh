@@ -9,24 +9,36 @@
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
 <script type="text/javascript">
+    /*$(window).on('hashchange', function () {
+        if (window.location.hash) {
+            var page = window.location.hash.replace('#', '');
+            console.log(page);
+            if (page == Number.NaN || page <= 0) {
+                return false;
+            } else {
+                getData(page);
+            }
+        }
+    });*/
     $(document).ready(function () {
-
-        loadGrid(1);
-
         $(document).on('click', '.pagination a', function (event) {
-            event.preventDefault();
             $('li').removeClass('active');
-            $(this).parent('li').addClass('active');            
+            $(this).parent('li').addClass('active');
+            event.preventDefault();
             var myurl = $(this).attr('href');
-            var page = $(this).attr('href').split('page=')[1];     
-            loadGrid(page);
+            var page = $(this).attr('href').split('page=')[1];
+            console.log(page);
+            getData(page);
         });
-
         $('#add_btn').click(function () {
             console.log('open modal');
-            $("#formModal").modal("show");
+            $("#addNewModal").modal("show");
         });
-
+        $("#filter-groupid").multipleSelect({
+            placeholder: "Select groups",
+            filter: true,
+            width: '100%'
+        }).multipleSelect("uncheckAll");
         $("#headertable").on("click", ".sort_col", function () {
             var me = $(this);
             if (me.hasClass("sort_asc")) {
@@ -37,30 +49,12 @@
                 me.removeClass("sort_desc").addClass("sort_asc");
             }
         });
-
-        $('#search').click(function(){           
-            loadGrid(0);
+        $('#search').click(function(){
+            var data = getSearch(false);
+            var sort = find_sort(false);
+            console.log(sort);
+            console.log(data);
         });
-
-        // click checkbox all
-        $("#ckall").click(function () {
-            $(".ckele").prop("checked", $(this).prop("checked"));
-        });
-        // click checkbox element
-        $('#body_grid').on("click", ".ckele", function () {
-            console.log($(this).prop('checked'));
-            if ($(".ckele").length === $('input.ckele:checked').length) {
-                $("#ckall").prop("checked", true);
-            } else {
-                $("#ckall").prop("checked", false);
-            }
-        });
-
-        $("#filter-groupid").multipleSelect({
-            placeholder: "Select groups",
-            filter: true
-        }).multipleSelect("uncheckAll");
-
         $('#filter-time_created').daterangepicker({
             autoApply: true,
             timePicker: true,
@@ -72,27 +66,42 @@
             }
         });
     });
-    function loadGrid(page) {
-        console.log(page);
+    function getData(page) {
         var data = getSearch(true);
-        var sort = getSort(true);
+        var sort = find_sort(true);
         $.ajax({
-            type: "POST",
-            url: 'sysuser/list',
+            method: "POST",
+            url: 'sysuser/',
             data: {
                 page:page,
                 search:data,
                 sort:sort
             }
         }).done(function (data) {
-            var obj = JSON.parse(data);   
-            $('#body_grid').html(obj.l);
-            $('#pagination').html(obj.p);
-        }).fail(function (jqXHR, ajaxOptions, thrownError) {          
+            //var obj = JSON.parse(data);
+            //$('#body_grid').html(obj.l);
+            //$('#pagination').html(obj.p);           
+            // location.hash = page;
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
             alert('No response from server');
         });
-    }   
-    function getSort(return_string) {
+    }
+    function getData1(page) {
+        var data = getSearch(true);
+        var sort = find_sort(true);
+        $.ajax({
+            url: '?page=' + page + '&search=' + data + '&sort=' + sort,
+            type: "get"
+        }).done(function (data) {
+            var obj = JSON.parse(data);
+            $('#body_grid').html(obj.l);
+            $('#pagination').html(obj.p);           
+            location.hash = page;
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
+            alert('No response from server');
+        });
+    }
+    function find_sort(return_string) {
         var obj = {};
         $('.sort_col').each(function (i) {
             if ($(this).hasClass("sort_asc")) {
@@ -112,7 +121,7 @@
         var obj = {};
         $('.filter-data', '#headertable').each(function () {          
             var tagName = $(this).prop("tagName").toLowerCase();
-            if(tagName === 'input' || tagName === 'select' || tagName === 'textarea') {
+            if(tagName==='input' || tagName==='select' || tagName === 'textarea') {
                 var type = $(this).attr('mtype');
                 var id = $(this).attr("id");
                 var val = '';
@@ -186,7 +195,7 @@
 </style>
 
 <div class="box ui_grid clearfix" id="ui_grid">
-    <div class="box_header_grid clearfix" id="grid_header">
+    <div class="box_header clearfix" id="grid_header">
         <div class="float-left box_title">Data Grid</div>
         <div class="float-right">
             <ul class="button-group">
@@ -219,7 +228,7 @@
                 <table id="headertable">
                     <thead>
                         <tr>
-                            <th class="ckrow"><input type="checkbox" name="ckall" id="ckall"></th>
+                            <th class="ckrow"><input type="checkbox" name="cka" id="cka"></th>
                             <th class="funcrow"></th>
                             <th class="funcrow"></th>
                             <?php echo $header[1]; ?>
@@ -234,18 +243,18 @@
                 </table>
             </div>
             <div class="table-body" id="body_grid">
-
+                @include('sysuser::list')
             </div>
         </div>
     </div>
     <div class="box_footer clearfix" id="footer_grid">
         <div class="wrap_pagination clearfix">
-            <div id="pagination"></div>
+            <div id="pagination">@include('sysuser::pagination')</div>
             <div id="pagination_inf">Show from <span id="fromr">0</span> to <span id="tor">0</span> of <span id="allr">0</span> 10</div>
         </div>
     </div>
 </div>
-<div class="modal" id="formModal">
+<div class="modal" id="addNewModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #337AB7;">
@@ -261,11 +270,7 @@
                                     <label for="email">Information:</label>
                                 </div>                            
                                 <div class="col-md-9">
-                                    <select name="test" id="test">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
+                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
                             </div>
                         </div>

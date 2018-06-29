@@ -12,6 +12,6 @@
 */
 
 Route::group(['prefix' => 'sysuser'], function () {
-    Route::get('/', 'SysUserController@index');
-    Route::get('getlist', 'SysUserController@grid');
+	Route::get('/', 'SysUserController@index');
+	Route::post('/list', 'SysUserController@grid');
 });

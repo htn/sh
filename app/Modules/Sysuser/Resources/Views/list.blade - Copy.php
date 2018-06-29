@@ -10,7 +10,7 @@
     <tbody id="gridview">
         @foreach ($items as $item)
         <tr>
-            <td><input type="checkbox" class="ckele"></td>
+            <td>{{ $item->id }}</td>
             <td class="funcrow"><a href="#" class="deleterow" idrd=""><img src="{{ asset('backend/images/erase.png') }}"></a></td>
             <td class="funcrow"><a href="#"><img src="{{ asset('backend/images/edit.png') }}"></a></td>
             <td>{{ $item->id }}</td>

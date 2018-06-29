@@ -4,6 +4,7 @@
         <title>Bootstrap Example</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="stylesheet" href="{{ asset('plugins/bootstrap-4.1.1/css/bootstrap.min.css') }}">
         <link href="{{ asset('backend/css/custom.css') }}" rel="stylesheet" type="text/css" />
         <script src="{{ asset('plugins/jquery-3.3.1.min.js') }}"></script>
@@ -14,6 +15,11 @@
             var offleft = 291;
             var path_js = '';
             $(document).ready(function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
                 $(document.body).gui();
             });
         </script>

@@ -79,7 +79,7 @@
             $("#fromr").html(obj.fromr);
             $("#tor").html(obj.tor);
             $("#allr").html(obj.allr);
-            $("#cka").prop("checked", false);
+            $("#ckall").prop("checkeled", false);
             $.View.blockUI("#ui_grid", false);
         }).fail(function (x) {
             $.View.blockUI("#ui_grid", false);
@@ -155,15 +155,15 @@
                 $.View.grid(page);
             });
             // click checkbox all
-            $("#cka").click(function () {
-                $(".cke").prop("checked", $(this).prop("checked"));
+            $("#ckall").click(function () {
+                $(".ckele").prop("checkeled", $(this).prop("checkeled"));
             });
             // clicl checkbox element
-            $("#bodytable").on("click", ".cke", function () {
-                if ($(".cke").length === $('input.cke:checked').length) {
-                    $("#cka").prop("checked", true);
+            $("#bodytable").on("click", ".ckele", function () {
+                if ($(".ckele").length === $('input.ckele:checkeled').length) {
+                    $("#ckall").prop("checkeled", true);
                 } else {
-                    $("#cka").prop("checked", false);
+                    $("#ckall").prop("checkeled", false);
                 }
             });
             $("#headertable").on("click", ".sort_col", function () {
@@ -179,7 +179,7 @@
             });
             $("#deletes_btn").click(function () {
                 var arr = [];
-                $('input.cke:checked').each(function () {
+                $('input.ckele:checkeled').each(function () {
                     arr.push($(this).val());
                 })
                 deletes(arr.join());
@@ -203,33 +203,33 @@
                 var type = $(this).attr("type");
                 if (type == "radio") {
                     var name = $(this).attr("name");
-                    var val = $('input[type=radio][name=' + name + ']:checked').val();
+                    var val = $('input[type=radio][name=' + name + ']:checkeled').val();
                     obj[id] = (val == undefined) ? '' : val;
                 } else if (type == "checkbox") {
-                    var checked = [];
-                    $('input[type=checkbox]:checked', $(this)).each(function () {
-                        checked.push($(this).val());
+                    var checkeled = [];
+                    $('input[type=checkbox]:checkeled', $(this)).each(function () {
+                        checkeled.push($(this).val());
                     });
-                    obj[id] = checked.join();
+                    obj[id] = checkeled.join();
                 }
             } else if (tagName == 'INPUT') {
                 var type = $(this).attr("type");
                 if (type == "radio") {
                     var name = $(this).attr("name");
                     if (!obj.hasOwnProperty(name)) {
-                        var val = $('input[type=radio][name=' + name + ']:checked').val();
+                        var val = $('input[type=radio][name=' + name + ']:checkeled').val();
                         obj[name] = (val == undefined) ? '' : val;
                     }
                 } else if (type == "checkbox") {
-                    obj[id] = ($(this).prop("checked")) ? $(this).val().trim() : '';
+                    obj[id] = ($(this).prop("checkeled")) ? $(this).val().trim() : '';
                 } else {
                     obj[id] = $(this).val().trim();
                 }
             } else if (tagName == 'SELECT') {
                 obj[id] = $(this).val();
             } else if (tagName == 'TEXTAREA') {
-                if ($(this).hasClass('ckeditor')) {
-                    obj[id] = CKEDITOR.instances[id].getData();
+                if ($(this).hasClass('ckeleditor')) {
+                    obj[id] = ckeleDITOR.instances[id].getData();
                 } else {
                     obj[id] = $(this).val();
                 }
@@ -318,8 +318,8 @@
                 } else if (tagName == 'SELECT') {
                     $(this).val(record[id]);
                 } else if (tagName == 'TEXTAREA') {
-                    if ($(this).hasClass('ckeditor')) {
-                        CKEDITOR.instances[id].setData(record[id]);
+                    if ($(this).hasClass('ckeleditor')) {
+                        ckeleDITOR.instances[id].setData(record[id]);
                     } else {
                         $(this).val();
                     }
@@ -348,8 +348,8 @@
             } else if (tagName == 'SELECT') {
                 $(this).val("");
             } else if (tagName == 'TEXTAREA') {
-                if ($(this).hasClass('ckeditor')) {
-                    CKEDITOR.instances[id].setData("");
+                if ($(this).hasClass('ckeleditor')) {
+                    ckeleDITOR.instances[id].setData("");
                 } else {
                     $(this).val("");
                 }

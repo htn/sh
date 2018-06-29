@@ -152,6 +152,10 @@ CSS form and data grid
   padding: 5px 15px;
   font-weight: bold;
 }
+.box_header_grid {
+  padding: 8px 15px 0px 15px;
+  font-weight: bold;
+}
 .box_title {  
   color: #000;
   font-weight: normal;
@@ -356,7 +360,7 @@ CSS form and data grid
   color: #FFF;
   display: inline-block;
   text-decoration: none;
-  border-radius: 5px;
+  /*border-radius: 5px;*/
 }
 #pagination a:active, #pagination a:focus, #pagination a:hover{
   text-decoration: none;
@@ -366,6 +370,11 @@ CSS form and data grid
 #pagination a.current{
   background: #e94d1c;
   text-decoration: none;
+}
+.page-link {
+  padding: 7px 12px 9px 12px;
+  margin-left: 5px;
+  border: none;
 }
 #bodytable thead {
   line-height: 0px !important;
@@ -385,6 +394,9 @@ CSS form and data grid
   background: #edeff1;
   height: 0px !important;
   overflow:hidden;
+}
+#bodytable tbody tr td:first-child {
+  text-align: center;
 }
 .blockui {
   position: absolute;

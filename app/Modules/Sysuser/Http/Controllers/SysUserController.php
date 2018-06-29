@@ -10,7 +10,7 @@ use App\Modules\Sysuser\Models\User;
 class SysUserController extends Controller {
 
     private $_cols = array(
-        'id' => array('width' => 200, 'align' => 'left', 'filter' => 'id', 'type' => ''),
+        'id' => array('width' => 90, 'align' => 'left', 'filter' => 'id', 'type' => ''),
         'username' => array('width' => 200, 'align' => 'left', 'filter' => 'username', 'type' => ''),
         'fullname' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => ''),
         'groupid' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => 'select', 'array' => 'arr_group'),
@@ -46,14 +46,24 @@ class SysUserController extends Controller {
         $header = $this->create_header_table(true);
         return view('sysuser::view', compact('items', 'cols', 'header'));
     }
-
-    public function grid(Request $request) {
-        $items = DB::table('sys_user')
-        ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
-        ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname')
-        ->paginate(10);
-        $cols = $this->_cols;
+    
+    public function grid(Request $request) {        
         if ($request->ajax()) {
+            $page = $request->input('page');
+            $search = json_decode($request->input('search'), true);
+            $sort = json_decode($request->input('sort'), true);
+
+            $items = DB::table('sys_user')
+            ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
+            ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname');
+            if(!empty($search['username'])) {
+                $items = $items->where('username','like', '%'.$search['username'].'%');
+            }
+            if(!empty($search['fullname'])) {
+                $items = $items->where('firstname',$search['fullname']);
+            }
+            $items = $items->paginate(10);
+            $cols = $this->_cols;
             $header = $this->create_header_table(false);
             $data = json_encode(array(
                 'l' => view('sysuser::list', compact('items', 'cols', 'header'))->render(),
@@ -61,8 +71,6 @@ class SysUserController extends Controller {
             ));
             return $data;
         }
-        $header = $this->create_header_table(true);
-        return view('sysuser::view', compact('items', 'cols', 'header'));
     }
 
     private function create_header_table($header = true) {
