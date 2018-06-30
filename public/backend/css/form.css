@@ -399,13 +399,13 @@ CSS form and data grid
   text-align: center;
 }
 .blockui {
-  position: absolute;
-  background-color: rgba(34, 45, 50, 0.2);
-  background-image: url(../images/loading/loading-spinner-blue.gif);
-  background-repeat: no-repeat;
-  background-position: center;
+    position: absolute;
+    background-color: rgba(34, 45, 50, 0.1);
+    background-image: url(../images/loading.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: wait;
 }
-
 /* The Close Button */
 .close {
   color: #aaaaaa;

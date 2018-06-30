@@ -8,19 +8,26 @@
 <script src="{{asset('backend/plugins/multiple-select/multiple-select.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
+<script type="text/javascript" src="{{asset('backend/plugins/view.js')}}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
+        $.View({
+            _ns: 'sysuser',
+            _ns_full: 'http://localhost/cds/public/sysuser',
+            _form_default: '#main-form'
+        });
+        $.View.init(true, function () {
+            console.log('Started ...');
+        });
         loadGrid(1);
-
         // Sự kiện click nút refresh
         $('#refresh-grid').click(function(){
             resetDataFilter();
-            loadGrid(0);
+            loadGrid(1);
         });
         // Sự kiện click nút search
         $('#search-grid').click(function(){
-            loadGrid(0);
+            loadGrid(1);
         });
         // Sự kiện click nút thêm mới
         $('#add-grid').click(function () {
@@ -28,7 +35,7 @@
         });
         // Sự kiện click nút xóa
         $('#delete-grid').click(function () {
-            $("#confirmModal").modal("show");
+            $.View.blockUI("#ui_grid", true);
         });
         // Sự kiện click icon edit row
         $('#body_grid').on("click", ".editrow", function () {
@@ -57,7 +64,7 @@
                 $(".sort_col").removeClass("sort_desc").removeClass("sort_asc");
                 me.removeClass("sort_desc").addClass("sort_asc");
             }
-            loadGrid(0);
+            loadGrid(1);
         });
         // Sự kiện click vào checkbox all
         $("#ckall").click(function () {
@@ -209,7 +216,7 @@
     border-radius: 0;
 }
 .modal-footer {
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1rem;
 }
 .modal-lg {
     max-width: 80%;
@@ -479,12 +486,12 @@
                 <ul class="button-group">
                     <li>
                         <button class="button" id="confirm-yes">
-                            <img src="{{asset('backend/images/save.png')}}" /> Yes
+                            <img src="{{asset('backend/images/yes.png')}}" /> Confirm
                         </button>
                     </li>
                     <li>
                         <button class="button" data-dismiss="modal">
-                            <img src="{{asset('backend/images/delete.png')}}" /> Cancel
+                            <img src="{{asset('backend/images/warning_custom.png')}}" /> Cancel
                         </button>
                     </li>
                 </ul>
