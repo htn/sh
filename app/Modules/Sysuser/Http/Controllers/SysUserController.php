@@ -13,11 +13,11 @@ class SysUserController extends Controller {
         'id' => array('width' => 90, 'align' => 'left', 'filter' => 'id', 'type' => ''),
         'username' => array('width' => 200, 'align' => 'left', 'filter' => 'username', 'type' => ''),
         'fullname' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => ''),
-        'groupid' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => 'select', 'array' => 'arr_group'),
-        'groupname' => array('width' => 200, 'align' => 'left', 'filter' => 'groupname', 'type' => ''),        
+        'groupid' => array('width' => 200, 'align' => 'left', 'filter' => 'groupid', 'type' => 'select', 'array' => 'arr_group'),
+        'groupname' => array('width' => 200, 'align' => 'left', 'filter' => 'groupname', 'type' => ''),
         'email' => array('width' => 300, 'align' => 'left', 'filter' => 'title', 'type' => ''),
         'phone_number' => array('width' => 230, 'align' => 'left', 'filter' => 'phone_number', 'type' => ''),
-        'address' => array('width' => 500, 'align' => 'left', 'filter' => 'address', 'type' => ''),     
+        'address' => array('width' => 500, 'align' => 'left', 'filter' => 'address', 'type' => ''),
         'description' => array('width' => 200, 'align' => 'left', 'filter' => 'title', 'type' => ''),
         'status' => array('width' => 200, 'align' => 'center', 'filter' => 'status', 'type' => 'status'),
         'user_created' => array('width' => 200, 'align' => 'center', 'filter' => 'user_created', 'type' => ''),
@@ -29,7 +29,7 @@ class SysUserController extends Controller {
         $this->arr_group = $this->getKVArr('sys_group', 'id', 'name');
     }
 
-    public function index(Request $request) {   
+    public function index(Request $request) {
         $items = DB::table('sys_user')
         ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
         ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname')
@@ -46,13 +46,13 @@ class SysUserController extends Controller {
         $header = $this->create_header_table(true);
         return view('sysuser::view', compact('items', 'cols', 'header'));
     }
-    
-    public function grid(Request $request) {        
+
+    public function grid(Request $request) {
         if ($request->ajax()) {
             $page = $request->input('page');
             $search = json_decode($request->input('search'), true);
-            $sort = json_decode($request->input('sort'), true);
-
+            $sort_column = $request->input('sort');
+            $direct_sort = $request->input('direct');
             $items = DB::table('sys_user')
             ->join('sys_group', 'sys_group.id', '=', 'sys_user.groupid')
             ->select('sys_user.*', DB::raw('CONCAT(sys_user.firstname," ",sys_user.lastname) as fullname'), 'sys_group.name as groupname');
@@ -60,7 +60,13 @@ class SysUserController extends Controller {
                 $items = $items->where('username','like', '%'.$search['username'].'%');
             }
             if(!empty($search['fullname'])) {
-                $items = $items->where('firstname',$search['fullname']);
+                $items = $items->where('firstname', $search['fullname']);
+            }
+            if(!empty($search['groupid'])) {
+                $items = $items->whereIn('groupid', explode(',',$search['groupid']));
+            }
+            if(!empty($sort_column) && !empty($direct_sort)) {
+                $items = $items->orderBy($sort_column, $direct_sort);
             }
             $items = $items->paginate(10);
             $cols = $this->_cols;
@@ -76,7 +82,7 @@ class SysUserController extends Controller {
     private function create_header_table($header = true) {
         if($header) {
             $header_title = '';
-            $header_search = '';         
+            $header_search = '';
             $header_resize = '';
             foreach ($this->_cols as $key => $val) {
                 $header_title .= '
@@ -99,7 +105,7 @@ class SysUserController extends Controller {
             return array($header_resize, $header_title, $header_search);
         } else {
             $header_resize = '';
-            foreach ($this->_cols as $key => $val) {           
+            foreach ($this->_cols as $key => $val) {
                 $header_resize .= '<th class="hdcell" style="min-width: ' . $val['width'] . 'px"></th>';
             }
             return array($header_resize);

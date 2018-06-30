@@ -1,4 +1,4 @@
-<table id="bodytable"> 
+<table id="bodytable">
     <thead>
         <tr>
             <th class="ckrow"></th>
@@ -12,15 +12,15 @@
         <tr>
             <td><input type="checkbox" class="ckele"></td>
             <td class="funcrow"><a href="#" class="deleterow" idrd=""><img src="{{ asset('backend/images/erase.png') }}"></a></td>
-            <td class="funcrow"><a href="#"><img src="{{ asset('backend/images/edit.png') }}"></a></td>
+            <td class="funcrow"><a href="#" class="editrow"><img src="{{ asset('backend/images/edit.png') }}"></a></td>
             <td>{{ $item->id }}</td>
-            <td>{{ $item->username }}</td>            
+            <td>{{ $item->username }}</td>
             <td>{{ $item->fullname }}</td>
             <td>{{ $item->groupname }}</td>
             <td>{{ $item->groupname }}</td>
             <td>{{ $item->email }}</td>
             <td>{{ $item->phone_number }}</td>
-            <td>{{ $item->address }}</td>          
+            <td>{{ $item->address }}</td>
             <td>{{ $item->description }}</td>
             <td>{{ $item->status }}</td>
             <td>{{ $item->user_created }}</td>

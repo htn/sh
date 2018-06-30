@@ -13,20 +13,41 @@
 
         loadGrid(1);
 
+        // Sự kiện click nút refresh
+        $('#refresh-grid').click(function(){
+            resetDataFilter();
+            loadGrid(0);
+        });
+        // Sự kiện click nút search
+        $('#search-grid').click(function(){
+            loadGrid(0);
+        });
+        // Sự kiện click nút thêm mới
+        $('#add-grid').click(function () {
+            $("#formModal").modal("show");
+        });
+        // Sự kiện click nút xóa
+        $('#delete-grid').click(function () {
+            $("#confirmModal").modal("show");
+        });
+        // Sự kiện click icon edit row
+        $('#body_grid').on("click", ".editrow", function () {
+            $("#formModal").modal("show");
+        });
+        // Sự kiện click icon delete row
+        $('#body_grid').on("click", ".deleterow", function () {
+            $("#confirmModal").modal("show");
+        });
+        // Sự kiện click vào trang trong phân trang
         $(document).on('click', '.pagination a', function (event) {
             event.preventDefault();
             $('li').removeClass('active');
-            $(this).parent('li').addClass('active');            
+            $(this).parent('li').addClass('active');
             var myurl = $(this).attr('href');
-            var page = $(this).attr('href').split('page=')[1];     
+            var page = $(this).attr('href').split('page=')[1];
             loadGrid(page);
         });
-
-        $('#add_btn').click(function () {
-            console.log('open modal');
-            $("#formModal").modal("show");
-        });
-
+        // Sự kiện click vào icon sort trong tiêu đề lưới
         $("#headertable").on("click", ".sort_col", function () {
             var me = $(this);
             if (me.hasClass("sort_asc")) {
@@ -36,17 +57,13 @@
                 $(".sort_col").removeClass("sort_desc").removeClass("sort_asc");
                 me.removeClass("sort_desc").addClass("sort_asc");
             }
-        });
-
-        $('#search').click(function(){           
             loadGrid(0);
         });
-
-        // click checkbox all
+        // Sự kiện click vào checkbox all
         $("#ckall").click(function () {
             $(".ckele").prop("checked", $(this).prop("checked"));
         });
-        // click checkbox element
+        // Sự kiện click checkbox từng dòng
         $('#body_grid').on("click", ".ckele", function () {
             console.log($(this).prop('checked'));
             if ($(".ckele").length === $('input.ckele:checked').length) {
@@ -55,12 +72,12 @@
                 $("#ckall").prop("checked", false);
             }
         });
-
+        // Khởi tạo multiselect box
         $("#filter-groupid").multipleSelect({
             placeholder: "Select groups",
             filter: true
         }).multipleSelect("uncheckAll");
-
+        // Khởi tạo cột có giá trị datetime
         $('#filter-time_created').daterangepicker({
             autoApply: true,
             timePicker: true,
@@ -75,32 +92,35 @@
     function loadGrid(page) {
         console.log(page);
         var data = getSearch(true);
-        var sort = getSort(true);
+        var sort = getSort(false);
         $.ajax({
             type: "POST",
             url: 'sysuser/list',
             data: {
                 page:page,
                 search:data,
-                sort:sort
+                sort:sort.column,
+                direct:sort.direct
             }
         }).done(function (data) {
-            var obj = JSON.parse(data);   
+            var obj = JSON.parse(data);
             $('#body_grid').html(obj.l);
             $('#pagination').html(obj.p);
-        }).fail(function (jqXHR, ajaxOptions, thrownError) {          
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
             alert('No response from server');
         });
-    }   
+    }
     function getSort(return_string) {
-        var obj = {};
+        var obj = {'column':'', 'direct':''};
         $('.sort_col').each(function (i) {
             if ($(this).hasClass("sort_asc")) {
-                obj[$(this).attr("sort")] = 'ASC';
-                return obj;
+                obj['column'] = $(this).attr("sort");
+                obj['direct'] = 'ASC';
+                return false;
             } else if ($(this).hasClass("sort_desc")) {
-                obj[$(this).attr("sort")] = 'DESC';
-                return obj;
+                obj['column'] = $(this).attr("sort");
+                obj['direct'] = 'DESC';
+                return false;
             }
         });
         if(return_string) {
@@ -110,7 +130,7 @@
     }
     function getSearch(return_string) {
         var obj = {};
-        $('.filter-data', '#headertable').each(function () {          
+        $('.filter-data', '#headertable').each(function () {
             var tagName = $(this).prop("tagName").toLowerCase();
             if(tagName === 'input' || tagName === 'select' || tagName === 'textarea') {
                 var type = $(this).attr('mtype');
@@ -131,12 +151,23 @@
                 }
                 id = id.split('-')[1];
                 obj[id] = val;
-            }            
+            }
         });
         if(return_string) {
             return JSON.stringify(obj);
         }
         return obj;
+    }
+    function resetDataFilter() {
+        $('.filter-data').each(function() {
+            var tagName = $(this).prop("tagName").toLowerCase();
+            if(tagName === 'input') {
+                $(this).val('');
+            } else if(tagName === 'select') {
+                var id = $(this).attr('id');
+                $('#'+id).multipleSelect("uncheckAll");
+            }
+        });
     }
 </script>
 
@@ -145,7 +176,7 @@
     border-radius: 0;
 }
 .ms-choice {
-    height: 33px;        
+    height: 33px;
     border-radius: 0;
     border-color: #ced4da;
     outline: none;
@@ -191,26 +222,26 @@
         <div class="float-right">
             <ul class="button-group">
                 <li>
-                    <button id="refresh_grid" class="button">
+                    <button id="refresh-grid" class="button">
                         <img src="{{asset('backend/images/refresh.png')}}" /> Refresh
                     </button>
                 </li>
                 <li>
-                    <button id="search" class="button">
+                    <button id="search-grid" class="button">
                         <img src="{{asset('backend/images/search.png')}}" /> Search
                     </button>
                 </li>
                 <li>
-                    <button id="add_btn" class="button">
+                    <button id="add-grid" class="button">
                         <img src="{{asset('backend/images/create.png')}}" /> Add
                     </button>
                 </li>
                 <li>
-                    <button id="deletes_btn" class="button">
+                    <button id="delete-grid" class="button">
                         <img src="{{asset('backend/images/delete.png')}}" /> Delete
                     </button>
                 </li>
-            </ul>              
+            </ul>
         </div>
     </div>
     <div class="box_body body_grid" id="grid_body">
@@ -259,7 +290,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <select name="test" id="test">
                                         <option>1</option>
@@ -273,7 +304,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -283,7 +314,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -293,7 +324,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -303,7 +334,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -313,7 +344,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -323,7 +354,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -333,7 +364,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -343,7 +374,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -353,7 +384,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -363,7 +394,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -373,7 +404,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -383,7 +414,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -393,7 +424,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -403,19 +434,19 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email"></label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <label class="form-check-label">
                                         <input type="checkbox" name="remember"> Remember me
                                     </label>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <ul class="button-group">                  
+                <ul class="button-group">
                     <li>
                         <button class="button">
                             <img src="{{asset('backend/images/save.png')}}" /> Save
@@ -424,6 +455,36 @@
                     <li>
                         <button class="button" data-dismiss="modal">
                             <img src="{{asset('backend/images/delete.png')}}" /> Close
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="confirmModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #337AB7;">
+                <h5 class="modal-title">Message</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Are you sure?</h3>
+                <h4>
+                    Do you really want to delete these records? This process cannot be undone.
+                </h4>
+            </div>
+            <div class="modal-footer">
+                <ul class="button-group">
+                    <li>
+                        <button class="button" id="confirm-yes">
+                            <img src="{{asset('backend/images/save.png')}}" /> Yes
+                        </button>
+                    </li>
+                    <li>
+                        <button class="button" data-dismiss="modal">
+                            <img src="{{asset('backend/images/delete.png')}}" /> Cancel
                         </button>
                     </li>
                 </ul>
