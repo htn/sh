@@ -9,7 +9,7 @@ use App\Modules\Sysuser\Models\User;
 
 class SysUserController extends Controller {
 
-    private $_cols = array(
+    private $_cols_ = array(
         'id' => array('width' => 90, 'align' => 'left', 'filter' => 'id', 'type' => ''),
         'username' => array('width' => 200, 'align' => 'left', 'filter' => 'username', 'type' => ''),
         'fullname' => array('width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => ''),
@@ -22,6 +22,36 @@ class SysUserController extends Controller {
         'status' => array('width' => 200, 'align' => 'center', 'filter' => 'status', 'type' => 'status'),
         'user_created' => array('width' => 200, 'align' => 'center', 'filter' => 'user_created', 'type' => ''),
         'time_created' => array('width' => 200, 'align' => 'center', 'filter' => 'time_created', 'type' => 'datetime')
+    );
+    private $_cols = array(
+        array('key'=>'id', 'form'=>false, 'width' => 90, 'align' => 'left', 'filter' => 'id', 'type' => ''),
+        array('key'=>'username','form'=>true, 'width' => 200, 'align' => 'left', 'filter' => 'username', 'type' => ''),
+        array('key'=>'fullname','form'=>true, 'width' => 200, 'align' => 'left', 'filter' => 'fullname', 'type' => ''),
+        array('key'=>'groupid','form'=>true, 'width' => 200, 'align' => 'left', 'filter' => 'groupid', 'type' => 'select', 'array' => 'arr_group'),
+        array('key'=>'groupname','form'=>false, 'width' => 200, 'align' => 'left', 'filter' => 'groupname', 'type' => ''),
+        array('key'=>'email','form'=>true, 'width' => 300, 'align' => 'left', 'filter' => 'title', 'type' => ''),
+        array('key'=>'phone_number','form'=>true, 'width' => 230, 'align' => 'left', 'filter' => 'phone_number', 'type' => ''),
+        array('key'=>'address','form'=>true, 'width' => 500, 'align' => 'left', 'filter' => 'address', 'type' => ''),
+        array('key'=>'description','form'=>true, 'width' => 200, 'align' => 'left', 'filter' => 'title', 'type' => ''),
+        array('key'=>'status','form'=>true, 'width' => 200, 'align' => 'center', 'filter' => 'status', 'type' => 'status'),
+        array('key'=>'user_created','form'=>false, 'width' => 200, 'align' => 'center', 'filter' => 'user_created', 'type' => ''),
+        array('key'=>'time_created','form'=>false, 'width' => 200, 'align' => 'center', 'filter' => 'time_created', 'type' => 'datetime')
+    );
+    private $test = array(
+        'key' => 'a',
+        'table' => 'alias', // alias cua bang
+        'type' => 'a', //text/number/date/datetime/time/checkbox/radio/select
+        'grid' => true, // hien thi tren luoi
+        'gwidth' => '', // chieu rong cot tren luoi
+        'gfilter' => 'name', // cot muon loc
+        'galign' => 'name', // cot muon loc
+        'data' => '', // du lieu neu la select box
+        'default' => 'a', // du lieu mac dinh
+        'form' => true, // hien thi tren form,
+        'label' => 'Label of field', // hien thi tren form,
+        'required' => true, // bat buoc nhap lieu
+        'message'=>'Data can not be empty', // bat buoc phai nhap lieu
+        'class' => 'col-md-6', // chieu rong cua cot tren form
     );
     private $arr_group = array();
 
@@ -79,16 +109,24 @@ class SysUserController extends Controller {
         }
     }
 
+    public function edit() {
+        $data = array(
+            'cols' => $this->_cols
+        );
+        return view('sysuser::form', $data);
+    }
+
     private function create_header_table($header = true) {
         if($header) {
             $header_title = '';
             $header_search = '';
             $header_resize = '';
-            foreach ($this->_cols as $key => $val) {
+            foreach ($this->_cols as $val) {
+                $key = $val['key'];
                 $header_title .= '
                 <th class="hdcell" style="min-width: ' . $val['width'] . 'px; text-align: ' . $val['align'] . '">
-                <span class="txt_title">col_' . $key . '</span>' . (!empty($val['filter']) ? '<span class="sort_col" sort="' . $val['filter'] . '"></span>' : '') . '</th>';
-                $id_filter = 'filter-'.$key;
+                <span class="txt_title">col_' . $val['key'] . '</span>' . (!empty($val['filter']) ? '<span class="sort_col" sort="' . $val['filter'] . '"></span>' : '') . '</th>';
+                $id_filter = 'filter-'.$val['key'];
                 $type = $val['type'];
                 if($val['type'] == 'select') {
                     $option = '';
@@ -105,7 +143,7 @@ class SysUserController extends Controller {
             return array($header_resize, $header_title, $header_search);
         } else {
             $header_resize = '';
-            foreach ($this->_cols as $key => $val) {
+            foreach ($this->_cols as $val) {
                 $header_resize .= '<th class="hdcell" style="min-width: ' . $val['width'] . 'px"></th>';
             }
             return array($header_resize);

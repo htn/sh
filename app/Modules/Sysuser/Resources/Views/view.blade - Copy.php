@@ -80,7 +80,7 @@
         }).done(function (data) {
             //var obj = JSON.parse(data);
             //$('#body_grid').html(obj.l);
-            //$('#pagination').html(obj.p);           
+            //$('#pagination').html(obj.p);
             // location.hash = page;
         }).fail(function (jqXHR, ajaxOptions, thrownError) {
             alert('No response from server');
@@ -95,7 +95,7 @@
         }).done(function (data) {
             var obj = JSON.parse(data);
             $('#body_grid').html(obj.l);
-            $('#pagination').html(obj.p);           
+            $('#pagination').html(obj.p);
             location.hash = page;
         }).fail(function (jqXHR, ajaxOptions, thrownError) {
             alert('No response from server');
@@ -119,7 +119,7 @@
     }
     function getSearch(return_string) {
         var obj = {};
-        $('.filter-data', '#headertable').each(function () {          
+        $('.filter-data', '#headertable').each(function () {
             var tagName = $(this).prop("tagName").toLowerCase();
             if(tagName==='input' || tagName==='select' || tagName === 'textarea') {
                 var type = $(this).attr('mtype');
@@ -140,7 +140,7 @@
                 }
                 id = id.split('-')[1];
                 obj[id] = val;
-            }            
+            }
         });
         if(return_string) {
             return JSON.stringify(obj);
@@ -154,7 +154,7 @@
     border-radius: 0;
 }
 .ms-choice {
-    height: 33px;        
+    height: 33px;
     border-radius: 0;
     border-color: #ced4da;
     outline: none;
@@ -219,7 +219,7 @@
                         <img src="{{asset('backend/images/delete.png')}}" /> Delete
                     </button>
                 </li>
-            </ul>              
+            </ul>
         </div>
     </div>
     <div class="box_body body_grid" id="grid_body">
@@ -268,7 +268,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -278,7 +278,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -288,7 +288,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -298,7 +298,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -308,7 +308,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -318,7 +318,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -328,7 +328,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -338,7 +338,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -348,7 +348,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -358,7 +358,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -368,7 +368,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -378,7 +378,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -388,7 +388,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -398,7 +398,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email">Information:</label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
                                 </div>
@@ -408,19 +408,19 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="email"></label>
-                                </div>                            
+                                </div>
                                 <div class="col-md-9">
                                     <label class="form-check-label">
                                         <input type="checkbox" name="remember"> Remember me
                                     </label>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <ul class="button-group">                  
+                <ul class="button-group">
                     <li>
                         <button class="button">
                             <img src="{{asset('backend/images/save.png')}}" /> Save
