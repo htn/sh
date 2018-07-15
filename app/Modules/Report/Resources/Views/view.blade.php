@@ -12,8 +12,8 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $.View({
-        _ns: 'sysuser',
-        _ns_full: 'http://localhost/cds/public/sysuser',
+        _ns: 'report',
+        _ns_full: 'http://localhost/cds/public/report',
         _form_default: '#main-form'
     });
     $.View.init(true, function () {
@@ -33,7 +33,7 @@ $(document).ready(function () {
     $('#add-grid').click(function () {
         $.ajax({
             type: "POST",
-            url: 'sysuser/edit',
+            url: 'report/edit',
             data: {
 
             }
@@ -118,7 +118,7 @@ function loadGrid(page) {
     var sort = getSort(false);
     $.ajax({
         type: "POST",
-        url: 'sysuser/list',
+        url: 'report/list',
         data: {
             page: page,
             search: data,

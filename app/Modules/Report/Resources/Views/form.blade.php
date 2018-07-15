@@ -113,7 +113,7 @@
         }
         $.ajax({
             type: "POST",
-            url: 'sysuser/save',
+            url: 'report/save',
             data: {
                 datas: JSON.stringify(infos[0])
             }
