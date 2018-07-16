@@ -139,8 +139,7 @@ $(document).ready(function () {
         autoApply: true,
         timePicker: false,
         singleDatePicker: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
+        startDate: "<?=date('d-m-Y', strtotime("-7 day"));?>",
         locale: {
             format: 'DD-MM-YYYY'
         }
@@ -149,8 +148,15 @@ $(document).ready(function () {
         autoApply: true,
         timePicker: false,
         singleDatePicker: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
+        startDate: "<?=date('d-m-Y', strtotime("+7 day"));?>",
+        locale: {
+            format: 'DD-MM-YYYY'
+        }
+    });
+    $('#filter-time_created').daterangepicker({
+        autoApply: true,
+        timePicker: false,
+        singleDatePicker: true,
         locale: {
             format: 'DD-MM-YYYY'
         }
@@ -430,7 +436,7 @@ function showConfirm(title, content, action) {
                 <h5 class="modal-title">Message</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">           
+            <div class="modal-body">
                 Do you really want to delete these records?
             </div>
             <div class="modal-footer">
@@ -459,7 +465,7 @@ function showConfirm(title, content, action) {
                 <h5 class="modal-title">Message</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">           
+            <div class="modal-body">
                 Saved successfully!
             </div>
             <div class="modal-footer">

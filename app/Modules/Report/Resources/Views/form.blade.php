@@ -1,7 +1,11 @@
 <form>
     <div class="row">
+        <input type="hidden" name="index_edit" id="index_edit" value="<?=(isset($record->id) ? $record->id : '');?>">
         <?php
         foreach ($cells as $cell) {
+            if(!$cell['form']) {
+                continue;
+            }
             $col = $cell['col'];
             $label = $cell['label'];
             $id = $cell['key'];
@@ -183,6 +187,7 @@
                 }
             }
         });
+        data['id'] = $('#index_edit').val().trim();
         return [data, message];
     }
 </script>

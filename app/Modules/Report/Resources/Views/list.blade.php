@@ -22,13 +22,12 @@
                         continue;
                     }
                     $val = $item->{$col['key']};
-                    if ($col['key'] == 'name' || $col['key'] == 'note') {
-                        $val = implode(" ", explode(" ", str_replace(",", ", ", $val), 10));
-                    }
                     if ($col['type'] == 'select') {
                         $val = (!empty($col['data'][$item->{$col['key']}]) ? $col['data'][$item->{$col['key']}] : '');
                     } else if ($col['type'] == 'date') {
-                        $val = date('d-m-Y', strtotime($item->{$col['key']}));                       
+                        $val = date('d-m-Y', strtotime($item->{$col['key']}));
+                    } else if ($col['type'] == 'datetime') {
+                        $val = date('d-m-Y H:i:s', strtotime($item->{$col['key']}));
                     }
                     ?>
                     <td>{{ $val }}</td>

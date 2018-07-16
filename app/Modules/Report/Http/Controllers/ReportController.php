@@ -6,42 +6,20 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Modules\Report\Exports\CollectionExport;
+use App\Modules\Report\Exports\FromViewExport;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller {
 
-    private $project_arr = array(
-        '1' => 'GCS',
-        '2' => 'ICombine',
-        '3' => 'Intelligent Charger',
-        '4' => 'PhoneBot',
-        '5' => 'IValuate'
-    );
-    private $user_arr = array(
-        '1' => 'Hao Nguyen',
-        '2' => 'Hoa Le',
-        '3' => 'Hoa Nguyen',
-        '4' => 'Uy Nguyen',
-        '5' => 'Huy Nguyen'
-    );
-    private $status_arr = array(
-        '0' => '0%',
-        '1' => '10%',
-        '2' => '20%',
-        '3' => '30%',
-        '4' => '40%',
-        '5' => '50%',
-        '6' => '60%',
-        '7' => '70%',
-        '8' => '80%',
-        '9' => '90%',
-        '10' => '100%',
-        '11' => 'Pending',
-        '12' => 'Cancel',
-        '13' => 'Delay'
-    );
+    private $project_arr = array();
+    private $user_arr = array();
+    private $status_arr = array();
 
     function __construct() {
-        
+        $this->project_arr = $this->getKVArr('report_project', 'id', 'name');
+        $this->user_arr = $this->getKVArr('report_member', 'id', 'name');
+        $this->status_arr = $this->getKVArr('report_status', 'id', 'name');
     }
 
     function init($grid = false) {
@@ -61,7 +39,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The project must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '4' => array(
                 'key' => 'userid',
                 'table' => 'main', // alias cua bang
@@ -77,7 +55,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The user must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '3' => array(
                 'key' => 'taskid',
                 'table' => 'main', // alias cua bang
@@ -93,7 +71,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Task ID can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '7' => array(
                 'key' => 'status',
                 'table' => 'main', // alias cua bang
@@ -109,7 +87,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The status must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '2' => array(
                 'key' => 'name',
                 'table' => 'main', // alias cua bang
@@ -125,7 +103,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Name can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-12', // chieu rong cua cot tren form
-            ),
+                ),
             '5' => array(
                 'key' => 'start_time',
                 'table' => 'main', // alias cua bang
@@ -141,7 +119,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Start time can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '6' => array(
                 'key' => 'end_time',
                 'table' => 'main', // alias cua bang
@@ -157,7 +135,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'End time can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-            ),
+                ),
             '8' => array(
                 'key' => 'note',
                 'table' => 'main', // alias cua bang
@@ -169,10 +147,26 @@ class ReportController extends Controller {
                 'data' => '', // du lieu neu la select box
                 'default' => '', // du lieu mac dinh
                 'form' => true, // hien thi tren form,
-                'label' => 'Note/ Status', // hien thi tren form,
+                'label' => 'Note', // hien thi tren form,
                 'required' => false, // bat buoc nhap lieu
                 'message' => '', // bat buoc phai nhap lieu
                 'col' => 'col-md-12', // chieu rong cua cot tren form
+            ),
+            '9' => array(
+                'key' => 'time_created',
+                'table' => 'main', // alias cua bang
+                'type' => 'datetime', //text/number/date/datetime/time/checkbox/radio/select
+                'grid' => true, // hien thi tren luoi
+                'gwidth' => '200', // chieu rong cot tren luoi
+                'gfilter' => 'time_created', // cot muon loc
+                'galign' => 'left', // canh le
+                'data' => '', // du lieu neu la select box
+                'default' => '', // du lieu mac dinh
+                'form' => false, // hien thi tren form,
+                'label' => 'Time created', // hien thi tren form,
+                'required' => false, // bat buoc nhap lieu
+                'message' => '', // bat buoc phai nhap lieu
+                'col' => '', // chieu rong cua cot tren form
             )
         );
         if ($grid) {
@@ -211,6 +205,9 @@ class ReportController extends Controller {
             if (!empty($search['end_time'])) {
                 $items = $items->where('end_time', '<=', date('Y-m-d', strtotime($search['end_time'])));
             }
+            if (!empty($search['time_created'])) {
+                $items = $items->where('time_created', '<=', date('Y-m-d 23:59:59', strtotime($search['time_created'])));
+            }
             if (!empty($sort_column) && !empty($direct_sort)) {
                 $items = $items->orderBy($sort_column, $direct_sort);
             } else {
@@ -242,17 +239,104 @@ class ReportController extends Controller {
     }
 
     public function exportFile() {
-        return \Maatwebsite\Excel\Facades\Excel::download(new CollectionExport(), 'export.xlsx');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'WEB APPLICATION GROUP REPORT');
+        $sheet->setCellValue('A2', 'REPORTER: HUY NGUYEN');
+        $reports = DB::table('report')
+        ->join('report_project', 'report_project.id', '=', 'report.projectid')
+        ->join('report_member', 'report_member.id', '=', 'report.userid')
+        ->join('report_status', 'report_status.id', '=', 'report.status')
+        ->select('report_project.name as project_name', 'report.name as task_name', 'taskid', 'report_member.name as user_name', 'start_time', 'end_time', 'report_status.name as status_name', 'note')->get()->toArray();
+        $reports = collect($reports)->map(function($x) {
+                    return (array) $x;
+                });
+        $row = 4;
+        $sheet->setCellValue('A'.$row, 'No');
+        $sheet->setCellValue('B'.$row, 'Project');
+        $sheet->setCellValue('C'.$row, 'Task Name');
+        $sheet->setCellValue('D'.$row, 'Task ID');
+        $sheet->setCellValue('E'.$row, 'PIC');
+        $sheet->setCellValue('F'.$row, 'Start Date');
+        $sheet->setCellValue('G'.$row, 'Completed Date');
+        $sheet->setCellValue('H'.$row, 'Completed');
+        $sheet->setCellValue('I'.$row, 'Note/ Status');
+        $row = 5;
+        $i = 1;
+        foreach ($reports as $record) {
+            $sheet->setCellValue('A'.$row, $i++);
+            $sheet->setCellValue('B'.$row, $record['project_name']);
+            $sheet->setCellValue('C'.$row, $record['task_name']);
+            $sheet->setCellValue('D'.$row, $record['taskid']);
+            $sheet->setCellValue('E'.$row, $record['user_name']);
+            $sheet->setCellValue('F'.$row, date('d-M-Y', strtotime($record['start_time'])));
+            $sheet->setCellValue('G'.$row, date('d-M-Y', strtotime($record['end_time'])));
+            $sheet->setCellValue('H'.$row, $record['status_name']);
+            $sheet->setCellValue('I'.$row, $record['note']);
+            if($record['status_name'] == '100%') {
+                $spreadsheet->getActiveSheet()->getStyle('A'.$row.':I'.$row)->getFont()->getColor()->setRGB('579d1c');
+            } else {
+                $spreadsheet->getActiveSheet()->getStyle('A'.$row.':I'.$row)->getFont()->getColor()->setRGB('000000');
+            }
+            $row++;
+        }
+        --$row;
+        $styleArrayCenter = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ]
+        ];
+
+        $styleArray = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '00000000'],
+                ],
+            ],
+        ];
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->getStyle('A4:i'.$row)->applyFromArray($styleArray);
+
+        $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
+        $spreadsheet->getActiveSheet()->mergeCells('A2:I2');
+        $spreadsheet->getActiveSheet()->getStyle('A1:A2')->applyFromArray($styleArrayCenter);
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFFF00');
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Web_application_report_'.date('M-d').'.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save("php://output");
+
+        // using laravel excel
+        //return \Maatwebsite\Excel\Facades\Excel::download(new CollectionExport(), 'export.xlsx');
+        //return \Maatwebsite\Excel\Facades\Excel::download(new FromViewExport(), 'export.xlsx');
     }
 
     public function save(Request $request) {
         if ($request->ajax()) {
             $datas = json_decode($request->input('datas'), true);
+            $id = $datas['id'];
+            unset($datas['id']);
             $datas['start_time'] = date('Y-m-d', strtotime($datas['start_time']));
             $datas['end_time'] = date('Y-m-d', strtotime($datas['end_time']));
-            $datas['user_created'] = $datas['userid'];
-            $datas['time_created'] = gmdate('Y-m-d', time());
-            DB::table('report')->insert($datas);
+            if(empty($id)) {
+                $datas['user_created'] = $datas['userid'];
+                $datas['time_created'] = gmdate('Y-m-d H:i:s', time());
+                DB::table('report')->insert($datas);
+            } else {
+                $datas['user_updated'] = $datas['userid'];
+                $datas['time_updated'] = gmdate('Y-m-d H:i:s', time());
+                DB::table('report')->where('id', $id)->update($datas);
+            }
             return 1;
         }
     }
@@ -277,7 +361,7 @@ class ReportController extends Controller {
                 }
                 $header_title .= '
                 <th class="hdcell" style="min-width: ' . $val['gwidth'] . 'px; text-align: ' . $val['galign'] . '">
-                <span class="txt_title">col_' . $val['key'] . '</span>' . (!empty($val['gfilter']) ? '<span class="sort_col" sort="' . $val['gfilter'] . '"></span>' : '') . '</th>';
+                <span class="txt_title">' . $val['label'] . '</span>' . (!empty($val['gfilter']) ? '<span class="sort_col" sort="' . $val['gfilter'] . '"></span>' : '') . '</th>';
                 $id_filter = 'filter-' . $val['key'];
                 $type = $val['type'];
                 if ($val['type'] == 'select') {
@@ -305,6 +389,14 @@ class ReportController extends Controller {
             }
             return array($header_resize);
         }
+    }
+
+    private function getKVArr($table = 'test', $key = 'id', $val = 'name', $is_delete = 'is_delete') {
+        $roles = array();
+        array_map(function($item) use (&$roles, $key, $val) {
+            $roles[$item->{$key}] = $item->{$val};
+        }, DB::table($table)->select($key, $val)->get()->toArray());
+        return $roles;
     }
 
 }
