@@ -301,8 +301,18 @@ class ReportController extends Controller {
                 ],
             ],
         ];
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->getStyle('A4:i'.$row)->applyFromArray($styleArray);
+        $worksheet->getStyle('A4:I'.$row)->applyFromArray($styleArray);
 
         $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
         $spreadsheet->getActiveSheet()->mergeCells('A2:I2');
