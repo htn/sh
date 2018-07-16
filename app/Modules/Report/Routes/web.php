@@ -16,4 +16,6 @@ Route::group(['prefix' => 'report'], function () {
     Route::post('/list', 'ReportController@grid');
     Route::post('/edit', 'ReportController@edit');
     Route::post('/save', 'ReportController@save');
+    Route::post('/delete', 'ReportController@delete');
+    Route::get('/export', 'ReportController@exportFile');
 });

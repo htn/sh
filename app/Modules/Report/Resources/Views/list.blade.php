@@ -4,27 +4,38 @@
             <th class="ckrow"></th>
             <th class="funcrow"></th>
             <th class="funcrow"></th>
-            <?=$header[0];?>
+            <?= $header[0]; ?>
         </tr>
     </thead>
     <tbody id="gridview">
-        @foreach ($items as $item)
-        <tr>
-            <td><input type="checkbox" class="ckele"></td>
-            <td class="funcrow"><a href="#" class="deleterow" idrd=""><img src="{{ asset('backend/images/erase.png') }}"></a></td>
-            <td class="funcrow"><a href="#" class="editrow"><img src="{{ asset('backend/images/edit.png') }}"></a></td>
-            <td>{{ $item->id }}</td>
-            <td>{{ $item->projectid }}</td>
-            <td>{{ $item->name }}</td>
-            <td>{{ $item->taskid }}</td>
-            <td>{{ $item->userid }}</td>            
-            <td>{{ $item->start_time }}</td>
-            <td>{{ $item->end_time }}</td>
-            <td>{{ $item->status }}</td>
-            <td>{{ $item->note }}</td>
-            <td>{{ $item->user_created }}</td>
-            <td>{{ $item->time_created }}</td>
-        </tr>
-        @endforeach
+        <?php
+        foreach ($items as $item) {
+            ?>
+            <tr>
+                <td><input type="checkbox" class="ckele" value="{{$item->id}}"></td>
+                <td class="funcrow"><a href="#" class="deleterow" idrd="{{$item->id}}"><img src="{{ asset('backend/images/erase.png') }}"></a></td>
+                <td class="funcrow"><a href="#" class="editrow" idrd="{{$item->id}}"><img src="{{ asset('backend/images/edit.png') }}"></a></td>
+
+                <?php
+                foreach ($cols as $col) {
+                    if (!$col['grid']) {
+                        continue;
+                    }
+                    $val = $item->{$col['key']};
+                    if ($col['key'] == 'name' || $col['key'] == 'note') {
+                        $val = implode(" ", explode(" ", str_replace(",", ", ", $val), 10));
+                    }
+                    if ($col['type'] == 'select') {
+                        $val = (!empty($col['data'][$item->{$col['key']}]) ? $col['data'][$item->{$col['key']}] : '');
+                    } else if ($col['type'] == 'date') {
+                        $val = date('d-m-Y', strtotime($item->{$col['key']}));                       
+                    }
+                    ?>
+                    <td>{{ $val }}</td>
+                    <?php
+                }
+                ?>
+            </tr>
+        <?php } ?>
     </tbody>
 </table>

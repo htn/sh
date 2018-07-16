@@ -31,6 +31,7 @@ $(document).ready(function () {
     });
     // Sự kiện click nút thêm mới
     $('#add-grid').click(function () {
+        $.View.blockUI("#ui_grid", true);
         $.ajax({
             type: "POST",
             url: 'report/edit',
@@ -38,32 +39,60 @@ $(document).ready(function () {
 
             }
         }).done(function (data) {
-            //var obj = JSON.parse(data);
+            $.View.blockUI("#ui_grid", false);
             $('#form-data').html(data);
-            //console.log(data);
+            $("#formModal").modal("show");
         }).fail(function (jqXHR, ajaxOptions, thrownError) {
-            alert('No response from server');
+            $.View.blockUI("#ui_grid", false);
+            showAlert('Error', 'No response from server');
         });
-        $("#formModal").modal("show");
+    });
+    // Sự kiện xuất excel
+    $('#export-grid').click(function () {
+        //composer require maatwebsite/excel
+        window.location = 'report/export';
     });
     // Sự kiện click nút xóa
     $('#delete-grid').click(function () {
-        $.View.blockUI("#ui_grid", true);
+        var ids = $("#grid_body input.ckele:checked").map(function () {
+            return $(this).attr("value");
+        }).get();
+        console.log(ids);
+        if (ids.length === 0) {
+            showAlert('Error', 'No item selected');
+        } else {
+            showConfirm('Message', 'Do you really want to delete these records?', 'deletes(' + JSON.stringify(ids) + ')');
+        }
     });
     // Sự kiện click icon edit row
     $('#body_grid').on("click", ".editrow", function () {
-        $("#formModal").modal("show");
+        var id = $(this).attr('idrd');
+        $.View.blockUI("#ui_grid", true);
+        $.ajax({
+            type: "POST",
+            url: 'report/edit',
+            data: {
+                id: id
+            }
+        }).done(function (data) {
+            $.View.blockUI("#ui_grid", false);
+            $('#form-data').html(data);
+            $("#formModal").modal("show");
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
+            $.View.blockUI("#ui_grid", false);
+            showAlert('Error', 'No response from server');
+        });
     });
     // Sự kiện click icon delete row
     $('#body_grid').on("click", ".deleterow", function () {
-        $("#confirmModal").modal("show");
+        var id = $(this).attr('idrd');
+        showConfirm('Message', 'Do you really want to delete these records?', 'deletes(' + id + ')');
     });
     // Sự kiện click vào trang trong phân trang
     $(document).on('click', '.pagination a', function (event) {
         event.preventDefault();
         $('li').removeClass('active');
         $(this).parent('li').addClass('active');
-        var myurl = $(this).attr('href');
         var page = $(this).attr('href').split('page=')[1];
         loadGrid(page);
     });
@@ -93,29 +122,54 @@ $(document).ready(function () {
         }
     });
     // Khởi tạo multiselect box
-    $("#filter-groupid").multipleSelect({
-        placeholder: "Select groups",
+    $("#filter-userid").multipleSelect({
+        placeholder: "Select user",
+        filter: true
+    }).multipleSelect("uncheckAll");
+    $("#filter-projectid").multipleSelect({
+        placeholder: "Select project",
+        filter: true
+    }).multipleSelect("uncheckAll");
+    $("#filter-status").multipleSelect({
+        placeholder: "Select status",
         filter: true
     }).multipleSelect("uncheckAll");
     // Khởi tạo cột có giá trị datetime
-    $('#filter-time_created').daterangepicker({
+    $('#filter-start_time').daterangepicker({
         autoApply: true,
-        timePicker: true,
+        timePicker: false,
         singleDatePicker: true,
         startDate: moment().startOf('hour'),
         endDate: moment().startOf('hour').add(32, 'hour'),
         locale: {
-            format: 'MM/DD/YYYY hh:mm A'
+            format: 'DD-MM-YYYY'
+        }
+    });
+    $('#filter-end_time').daterangepicker({
+        autoApply: true,
+        timePicker: false,
+        singleDatePicker: true,
+        startDate: moment().startOf('hour'),
+        endDate: moment().startOf('hour').add(32, 'hour'),
+        locale: {
+            format: 'DD-MM-YYYY'
         }
     });
     $('#formModal').on('click', '#btn_form_save', function () {
         save();
     });
+    $('#confirm-yes').click(function () {
+        var action = $(this).attr('action');
+        if (eval(`typeof ${action}`) === "function") {
+            eval(`${fnString}`);
+        }
+    });
 });
 function loadGrid(page) {
-    console.log(page);
+    $('#ckall').prop('checked', false);
     var data = getSearch(true);
     var sort = getSort(false);
+    $.View.blockUI("#ui_grid", true);
     $.ajax({
         type: "POST",
         url: 'report/list',
@@ -126,11 +180,13 @@ function loadGrid(page) {
             direct: sort.direct
         }
     }).done(function (data) {
+        $.View.blockUI("#ui_grid", false);
         var obj = JSON.parse(data);
         $('#body_grid').html(obj.l);
         $('#pagination').html(obj.p);
     }).fail(function (jqXHR, ajaxOptions, thrownError) {
-        alert('No response from server');
+        $.View.blockUI("#ui_grid", false);
+        showAlert('Error', 'No response from server');
     });
 }
 function getSort(return_string) {
@@ -181,7 +237,31 @@ function getSearch(return_string) {
     }
     return obj;
 }
+function deletes(ids) {
+    if ($.isArray(ids)) {
+        ids = ids.join();
+    }
+    console.log(ids);
+    $("#confirmModal").modal("hide");
+    $.View.blockUI("#ui_grid", true);
+    $.ajax({
+        type: "POST",
+        url: 'report/delete',
+        data: {
+            ids: ids
+        }
+    }).done(function (r) {
+        $.View.blockUI("#ui_grid", false);
+        if (r === '1') {
+            loadGrid(1);
+        }
+    }).fail(function (jqXHR, ajaxOptions, thrownError) {
+        $.View.blockUI("#ui_grid", false);
+        showAlert('Error', 'No response from server');
+    });
+}
 function resetDataFilter() {
+    $('#ckall').prop('checked', false);
     $('.filter-data').each(function () {
         var tagName = $(this).prop("tagName").toLowerCase();
         if (tagName === 'input') {
@@ -191,6 +271,17 @@ function resetDataFilter() {
             $('#' + id).multipleSelect("uncheckAll");
         }
     });
+}
+function showAlert(title, content) {
+    $('#alertModal .modal-title').html(title);
+    $('#alertModal .modal-body').html(content);
+    $("#alertModal").modal("show");
+}
+function showConfirm(title, content, action) {
+    $('#confirmModal .modal-title').html(title);
+    $('#confirmModal .modal-body').html(content);
+    $('#confirmModal #confirm-yes').attr('action', action);
+    $("#confirmModal").modal("show");
 }
 </script>
 
@@ -234,8 +325,9 @@ function resetDataFilter() {
     .modal-footer {
         padding: 0.8rem 1rem;
     }
-    .modal-lg {
-        max-width: 80%;
+
+    .rred {
+        color: red;
     }
 </style>
 
@@ -252,6 +344,11 @@ function resetDataFilter() {
                 <li>
                     <button id="search-grid" class="button">
                         <img src="{{asset('backend/images/search.png')}}" /> Search
+                    </button>
+                </li>
+                <li>
+                    <button id="export-grid" class="button">
+                        <img src="{{asset('backend/images/download.png')}}" /> Export
                     </button>
                 </li>
                 <li>
@@ -300,9 +397,9 @@ function resetDataFilter() {
     </div>
 </div>
 <div class="modal" id="formModal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #337AB7;">
+            <div class="modal-header" style="background-color: #009cd7;">
                 <h5 class="modal-title">Message</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
@@ -313,12 +410,12 @@ function resetDataFilter() {
                 <ul class="button-group">
                     <li>
                         <button class="button" id="btn_form_save">
-                            <img src="{{asset('backend/images/save.png')}}" /> Save
+                            <img src="{{asset('backend/images/save.png')}}" /><span>Save</span>
                         </button>
                     </li>
                     <li>
                         <button class="button" data-dismiss="modal">
-                            <img src="{{asset('backend/images/delete.png')}}" /> Close
+                            <img src="{{asset('backend/images/delete.png')}}" /><span>Close</span>
                         </button>
                     </li>
                 </ul>
@@ -327,31 +424,49 @@ function resetDataFilter() {
     </div>
 </div>
 <div class="modal" id="confirmModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #337AB7;">
+            <div class="modal-header" style="background-color: #009cd7;">
                 <h5 class="modal-title">Message</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>Are you sure?</h3>
-                <h4>
-                    Do you really want to delete these records? This process cannot be undone.
-                </h4>
+            <div class="modal-body">           
+                Do you really want to delete these records?
             </div>
             <div class="modal-footer">
                 <ul class="button-group">
                     <li>
-                        <button class="button" id="confirm-yes">
-                            <img src="{{asset('backend/images/yes.png')}}" /> Confirm
+                        <button class="button" id="confirm-yes" action="">
+                            <img src="{{asset('backend/images/yes.png')}}" />
+                            <span>Confirm</span>
                         </button>
                     </li>
                     <li>
                         <button class="button" data-dismiss="modal">
-                            <img src="{{asset('backend/images/warning_custom.png')}}" /> Cancel
+                            <img src="{{asset('backend/images/warning_custom.png')}}" />
+                            <span>Cancel</span>
                         </button>
                     </li>
                 </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="alertModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #009cd7;">
+                <h5 class="modal-title">Message</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">           
+                Saved successfully!
+            </div>
+            <div class="modal-footer">
+                <button class="button" data-dismiss="modal">
+                    <img src="{{asset('backend/images/yes.png')}}" />
+                    <span>OK</span>
+                </button>
             </div>
         </div>
     </div>
