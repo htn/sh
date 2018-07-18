@@ -203,10 +203,24 @@ $(document).ready(function () {
             alert('No response from server');
         });
     });
-    $('#openBtn').click(function(){
-    $('#myModal').modal({show:true});
-})
+    $(document).on({
+        'show.bs.modal': function () {
+            var zIndex = 1040 + (10 * $('.modal:visible').length);
+            $(this).css('z-index', zIndex);
+            setTimeout(function() {
+                $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+            }, 0);
+        },
+        'hidden.bs.modal': function() {
+            if ($('.modal:visible').length > 0) {
+                setTimeout(function() {
+                    $(document.body).addClass('modal-open');
+                }, 0);
+            }
+        }
+    }, '.modal');
 });
+
 function loadGrid(page) {
     $('#ckall').prop('checked', false);
     var data = getSearch(true);
@@ -368,12 +382,6 @@ function showConfirm(title, content, action) {
     .modal-footer {
         padding: 0.8rem 1rem;
     }
-    .modal:nth-of-type(even) {
-        z-index: 1052 !important;
-    }
-    .modal-backdrop.show:nth-of-type(even) {
-        z-index: 1051 !important;
-    }
     .rred {
         color: red;
     }
@@ -383,7 +391,6 @@ function showConfirm(title, content, action) {
     <div class="box_header_grid clearfix" id="grid_header">
         <div class="float-left box_title">Data Grid</div>
         <div class="float-right">
-            <a data-toggle="modal" href="#myModal" class="btn btn-primary">Launch modal</a>
             <ul class="button-group">
                 <li>
                     <button id="refresh-grid" class="button">
@@ -445,7 +452,7 @@ function showConfirm(title, content, action) {
         </div>
     </div>
 </div>
-<div class="modal" id="formModal">
+<div class="modal" id="formModal" data-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #009cd7;">
@@ -472,7 +479,7 @@ function showConfirm(title, content, action) {
         </div>
     </div>
 </div>
-<div class="modal" id="confirmModal">
+<div class="modal" id="confirmModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #009cd7;">
@@ -520,7 +527,7 @@ function showConfirm(title, content, action) {
         </div>
     </div>
 </div>
-<div class="modal" id="projectModal">
+<div class="modal" id="projectModal" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #009cd7;">
@@ -552,45 +559,6 @@ function showConfirm(title, content, action) {
                 </ul>
             </div>
         </div>
-    </div>
-</div>
-<div class="modal" id="myModal">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Modal title</h4>    
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div><div class="container"></div>
-        <div class="modal-body">
-          Content for the dialog / modal goes here.
-          <a data-toggle="modal" href="#myModal2" class="btn btn-primary">Launch modal</a>
-        </div>
-        <div class="modal-footer">
-          <a href="#" data-dismiss="modal" class="btn">Close</a>
-          <a href="#" class="btn btn-primary">Save changes</a>
-        </div>
-      </div>
-    </div>
-</div>
-<div class="modal" id="myModal2" data-backdrop="static">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">2nd Modal title</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div><div class="container"></div>
-        <div class="modal-body">
-          Content for the dialog / modal goes here.
-          Content for the dialog / modal goes here.
-          Content for the dialog / modal goes here.
-          Content for the dialog / modal goes here.
-          Content for the dialog / modal goes here.
-        </div>
-        <div class="modal-footer">
-          <a href="#" data-dismiss="modal" class="btn">Close</a>
-          <a href="#" class="btn btn-primary">Save changes</a>
-        </div>
-      </div>
     </div>
 </div>
 @endsection
