@@ -141,7 +141,7 @@ class ReportController extends Controller {
                 'table' => 'main', // alias cua bang
                 'type' => 'textarea', //text/number/date/datetime/time/checkbox/radio/select
                 'grid' => true, // hien thi tren luoi
-                'gwidth' => '500', // chieu rong cot tren luoi
+                'gwidth' => '300', // chieu rong cot tren luoi
                 'gfilter' => 'note', // cot muon loc
                 'galign' => 'left', // canh le
                 'data' => '', // du lieu neu la select box

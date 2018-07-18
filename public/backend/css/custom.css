@@ -4,12 +4,13 @@ html, body {
     margin: 0;
     padding: 0;
     font-size: 17px;
-    font-family: 'Arsenal Regular';
+    font-size: .95rem;
+    /*font-family: 'Arsenal Regular';*/
     color: #444;
 }
 select, select option {
-    font-family: 'Arsenal Regular';
-    font-size: 15px;
+    /*font-family: 'Arsenal Regular';*/
+    /*font-size: 15px;*/
 }
 .clearfix:before,.clearfix:after {
     content: " ";

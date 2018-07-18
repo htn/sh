@@ -41,6 +41,7 @@ table#bodytable > tbody > tr:nth-child(odd) td {
 }
 table#bodytable tr:hover td {
   background: rgba(0, 156, 215, 0.2) !important;
+  border-right-color: transparent;
 }
 table#bodytable tr td:hover {
   background: rgba(0, 156, 215, 0.2) !important;
