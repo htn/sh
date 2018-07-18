@@ -1,9 +1,9 @@
 <form>
     <div class="row">
-        <input type="hidden" name="index_edit" id="index_edit" value="<?=(isset($record->id) ? $record->id : '');?>">
+        <input type="hidden" name="index_edit" id="index_edit" value="<?= (isset($record->id) ? $record->id : ''); ?>">
         <?php
         foreach ($cells as $cell) {
-            if(!$cell['form']) {
+            if (!$cell['form']) {
                 continue;
             }
             $col = $cell['col'];
@@ -19,7 +19,7 @@
             <div class="form-group <?= $col ?>">
                 <div class="row">
                     <div class="text-left <?= $col_label ?>">
-                        <label for="<?= $id; ?>"><?= $label ?> <?= $required ?></label>
+                        <label for="<?= $id; ?>"><?= $label ?> <?= $required ?> <?= ($cell['key'] == 'projectid' ? ' <span style="cursor: pointer;" id="add_projectid"><img src="' . asset('backend/images/create.png') . '" /></span>' : ''); ?></label>
                     </div>
                     <div class="<?= $col_field ?>">
                         <?php

@@ -25,9 +25,9 @@
                     </li>
                 </ul>
             </li>
-            <li class="">
-                <a href="/dailyreport">
-                    <span class="ico ico_user"></span> <span class="tit">Đăng ký</span>
+            <li class="active">
+                <a href="/report">
+                    <span class="ico ico_menu_news"></span> <span class="tit">Báo cáo ngày</span>
                 </a>
             </li>            
         </ul>

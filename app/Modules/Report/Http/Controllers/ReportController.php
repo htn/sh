@@ -39,7 +39,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The project must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '4' => array(
                 'key' => 'userid',
                 'table' => 'main', // alias cua bang
@@ -55,7 +55,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The user must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '3' => array(
                 'key' => 'taskid',
                 'table' => 'main', // alias cua bang
@@ -71,7 +71,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Task ID can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '7' => array(
                 'key' => 'status',
                 'table' => 'main', // alias cua bang
@@ -87,7 +87,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'The status must be selected', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '2' => array(
                 'key' => 'name',
                 'table' => 'main', // alias cua bang
@@ -97,13 +97,13 @@ class ReportController extends Controller {
                 'gfilter' => 'name', // cot muon loc
                 'galign' => 'left', // canh le
                 'data' => '', // du lieu neu la select box
-                'default' => 'Test', // du lieu mac dinh
+                'default' => '', // du lieu mac dinh
                 'form' => true, // hien thi tren form,
                 'label' => 'Task name', // hien thi tren form,
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Name can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-12', // chieu rong cua cot tren form
-                ),
+            ),
             '5' => array(
                 'key' => 'start_time',
                 'table' => 'main', // alias cua bang
@@ -119,7 +119,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Start time can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '6' => array(
                 'key' => 'end_time',
                 'table' => 'main', // alias cua bang
@@ -135,7 +135,7 @@ class ReportController extends Controller {
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'End time can not be empty', // bat buoc phai nhap lieu
                 'col' => 'col-md-6', // chieu rong cua cot tren form
-                ),
+            ),
             '8' => array(
                 'key' => 'note',
                 'table' => 'main', // alias cua bang
@@ -191,7 +191,7 @@ class ReportController extends Controller {
                 $items = $items->where('name', 'like', '%' . $search['name'] . '%');
             }
             if (!empty($search['status'])) {
-                $items = $items->where('status', $search['status']);
+                $items = $items->whereIn('status', explode(',', $search['status']));
             }
             if (!empty($search['projectid'])) {
                 $items = $items->whereIn('projectid', explode(',', $search['projectid']));
@@ -213,7 +213,7 @@ class ReportController extends Controller {
             } else {
                 $items = $items->orderBy('id', 'desc');
             }
-            $items = $items->paginate(10);
+            $items = $items->paginate(15);
             $cols = $this->init(true);
             $header = $this->create_header_table(false);
             $data = json_encode(array(
@@ -238,45 +238,55 @@ class ReportController extends Controller {
         return view('report::form', $data);
     }
 
-    public function exportFile() {
+    public function exportFile(Request $request) {
+        $searchs = json_decode($request->input('params'), true);
+        $search_time_from = (!empty($searchs['start_time']) ? date('Y-m-d', $searchs['start_time']) : '');
+        $search_time_to = (!empty($searchs['end_time']) ? date('Y-m-d', $searchs['end_time']) : '');
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'WEB APPLICATION GROUP REPORT');
         $sheet->setCellValue('A2', 'REPORTER: HUY NGUYEN');
         $reports = DB::table('report')
-        ->join('report_project', 'report_project.id', '=', 'report.projectid')
-        ->join('report_member', 'report_member.id', '=', 'report.userid')
-        ->join('report_status', 'report_status.id', '=', 'report.status')
-        ->select('report_project.name as project_name', 'report.name as task_name', 'taskid', 'report_member.name as user_name', 'start_time', 'end_time', 'report_status.name as status_name', 'note')->get()->toArray();
+                ->join('report_project', 'report_project.id', '=', 'report.projectid')
+                ->join('report_member', 'report_member.id', '=', 'report.userid')
+                ->join('report_status', 'report_status.id', '=', 'report.status')
+                ->select('report_project.name as project_name', 'report.name as task_name', 'taskid', 'report_member.name as user_name', 'start_time', 'end_time', 'report_status.name as status_name', 'note');
+        if (!empty($search_time_to)) {
+            $reports = $reports->where('start_time', '<=', $search_time_to);
+        }
+        if (!empty($search_time_from)) {
+            $reports = $reports->where('start_time', '>=', $search_time_from);
+        }
+        $reports = $reports->get()->toArray();
         $reports = collect($reports)->map(function($x) {
-                    return (array) $x;
-                });
+            return (array) $x;
+        });
         $row = 4;
-        $sheet->setCellValue('A'.$row, 'No');
-        $sheet->setCellValue('B'.$row, 'Project');
-        $sheet->setCellValue('C'.$row, 'Task Name');
-        $sheet->setCellValue('D'.$row, 'Task ID');
-        $sheet->setCellValue('E'.$row, 'PIC');
-        $sheet->setCellValue('F'.$row, 'Start Date');
-        $sheet->setCellValue('G'.$row, 'Completed Date');
-        $sheet->setCellValue('H'.$row, 'Completed');
-        $sheet->setCellValue('I'.$row, 'Note/ Status');
+        $sheet->setCellValue('A' . $row, 'No');
+        $sheet->setCellValue('B' . $row, 'Project');
+        $sheet->setCellValue('C' . $row, 'Task Name');
+        $sheet->setCellValue('D' . $row, 'Task ID');
+        $sheet->setCellValue('E' . $row, 'PIC');
+        $sheet->setCellValue('F' . $row, 'Start Date');
+        $sheet->setCellValue('G' . $row, 'Completed Date');
+        $sheet->setCellValue('H' . $row, 'Completed');
+        $sheet->setCellValue('I' . $row, 'Note/ Status');
         $row = 5;
         $i = 1;
         foreach ($reports as $record) {
-            $sheet->setCellValue('A'.$row, $i++);
-            $sheet->setCellValue('B'.$row, $record['project_name']);
-            $sheet->setCellValue('C'.$row, $record['task_name']);
-            $sheet->setCellValue('D'.$row, $record['taskid']);
-            $sheet->setCellValue('E'.$row, $record['user_name']);
-            $sheet->setCellValue('F'.$row, date('d-M-Y', strtotime($record['start_time'])));
-            $sheet->setCellValue('G'.$row, date('d-M-Y', strtotime($record['end_time'])));
-            $sheet->setCellValue('H'.$row, $record['status_name']);
-            $sheet->setCellValue('I'.$row, $record['note']);
-            if($record['status_name'] == '100%') {
-                $spreadsheet->getActiveSheet()->getStyle('A'.$row.':I'.$row)->getFont()->getColor()->setRGB('579d1c');
+            $sheet->setCellValue('A' . $row, $i++);
+            $sheet->setCellValue('B' . $row, $record['project_name']);
+            $sheet->setCellValue('C' . $row, $record['task_name']);
+            $sheet->setCellValue('D' . $row, $record['taskid']);
+            $sheet->setCellValue('E' . $row, $record['user_name']);
+            $sheet->setCellValue('F' . $row, date('d-M-Y', strtotime($record['start_time'])));
+            $sheet->setCellValue('G' . $row, date('d-M-Y', strtotime($record['end_time'])));
+            $sheet->setCellValue('H' . $row, $record['status_name']);
+            $sheet->setCellValue('I' . $row, $record['note']);
+            if ($record['status_name'] == '100%') {
+                $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->getFont()->getColor()->setRGB('579d1c');
             } else {
-                $spreadsheet->getActiveSheet()->getStyle('A'.$row.':I'.$row)->getFont()->getColor()->setRGB('000000');
+                $spreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->getFont()->getColor()->setRGB('000000');
             }
             $row++;
         }
@@ -312,7 +322,9 @@ class ReportController extends Controller {
         $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
 
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->getStyle('A4:I'.$row)->applyFromArray($styleArray);
+        $worksheet->getStyle('A4:I' . $row)->applyFromArray($styleArray);
+        $spreadsheet->getActiveSheet()->getStyle('C5:C' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $spreadsheet->getActiveSheet()->getStyle('I5:I' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
         $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
         $spreadsheet->getActiveSheet()->mergeCells('A2:I2');
@@ -321,7 +333,7 @@ class ReportController extends Controller {
         $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFFF00');
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Web_application_report_'.date('M-d').'.xlsx"');
+        header('Content-Disposition: attachment; filename="Web_application_report_' . date('M-d') . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer = new Xlsx($spreadsheet);
         $writer->save("php://output");
@@ -338,7 +350,7 @@ class ReportController extends Controller {
             unset($datas['id']);
             $datas['start_time'] = date('Y-m-d', strtotime($datas['start_time']));
             $datas['end_time'] = date('Y-m-d', strtotime($datas['end_time']));
-            if(empty($id)) {
+            if (empty($id)) {
                 $datas['user_created'] = $datas['userid'];
                 $datas['time_created'] = gmdate('Y-m-d H:i:s', time());
                 DB::table('report')->insert($datas);
@@ -348,6 +360,22 @@ class ReportController extends Controller {
                 DB::table('report')->where('id', $id)->update($datas);
             }
             return 1;
+        }
+    }
+
+    public function saveProject(Request $request) {
+        if ($request->ajax()) {
+            $name = $request->input('name');
+            $check = DB::table('report_project')->where('name', $name)->first();
+            if (!empty($check)) {
+                return 'exist';
+            }
+            $datas = array();
+            $datas['name'] = $name;
+            $datas['user_created'] = '2';
+            $datas['time_created'] = gmdate('Y-m-d H:i:s', time());
+            $id = DB::table('report_project')->insertGetId($datas);
+            return $id;
         }
     }
 

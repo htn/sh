@@ -50,14 +50,13 @@ $(document).ready(function () {
     // Sự kiện xuất excel
     $('#export-grid').click(function () {
         //composer require maatwebsite/excel
-        window.location = 'report/export';
+        window.location = 'report/export?params=' + getSearch(true);
     });
     // Sự kiện click nút xóa
     $('#delete-grid').click(function () {
         var ids = $("#grid_body input.ckele:checked").map(function () {
             return $(this).attr("value");
         }).get();
-        console.log(ids);
         if (ids.length === 0) {
             showAlert('Error', 'No item selected');
         } else {
@@ -139,7 +138,7 @@ $(document).ready(function () {
         autoApply: true,
         timePicker: false,
         singleDatePicker: true,
-        startDate: "<?=date('d-m-Y', strtotime("-7 day"));?>",
+        startDate: "<?= date('d-m-Y', strtotime("-7 day")); ?>",
         locale: {
             format: 'DD-MM-YYYY'
         }
@@ -148,7 +147,7 @@ $(document).ready(function () {
         autoApply: true,
         timePicker: false,
         singleDatePicker: true,
-        startDate: "<?=date('d-m-Y', strtotime("+7 day"));?>",
+        startDate: "<?= date('d-m-Y', strtotime("+7 day")); ?>",
         locale: {
             format: 'DD-MM-YYYY'
         }
@@ -169,6 +168,36 @@ $(document).ready(function () {
         if (eval(`typeof ${action}`) === "function") {
             eval(`${fnString}`);
         }
+    });
+    $('#formModal').on('click', '#add_projectid', function () {
+        $("#projectModal").modal("show");
+    });
+    $('#save-project').click(function () {
+        var name = $('#project_name').val().trim();
+        $.View.blockUI("#ui_grid", true);
+        $.ajax({
+            type: "POST",
+            url: 'report/save-project',
+            data: {
+                name: name
+            }
+        }).done(function (r) {
+            $.View.blockUI("#ui_grid", false);
+            if (r === 'exist') {
+                alert('Error: ' + name + ' is exist');
+            } else if (parseInt(r) > 0) {
+                $("#projectModal").modal("hide");
+                var optinos = $('#projectid').html();
+                optinos = optinos + '<option value="' + r + '">' + name + '</option>';
+                $('#projectid').html(optinos);
+                $("#filter-projectid").html(optinos).multipleSelect('refresh').multipleSelect('uncheckAll');
+            } else {
+                alert('Error: saved data failed');
+            }
+        }).fail(function (jqXHR, ajaxOptions, thrownError) {
+            $.View.blockUI("#ui_grid", false);
+            alert('No response from server');
+        });
     });
 });
 function loadGrid(page) {
@@ -406,7 +435,7 @@ function showConfirm(title, content, action) {
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #009cd7;">
-                <h5 class="modal-title">Message</h5>
+                <h5 class="modal-title">Form</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="form-data">
@@ -473,6 +502,40 @@ function showConfirm(title, content, action) {
                     <img src="{{asset('backend/images/yes.png')}}" />
                     <span>OK</span>
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="projectModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #009cd7;">
+                <h5 class="modal-title">Add project</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="project_name">Project name:</label>
+                        <input type="text" class="form-control" id="project_name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <ul class="button-group">
+                    <li>
+                        <button class="button" id="save-project" action="">
+                            <img src="{{asset('backend/images/save.png')}}" />
+                            <span>Save</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="button" data-dismiss="modal">
+                            <img src="{{asset('backend/images/warning_custom.png')}}" />
+                            <span>Cancel</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

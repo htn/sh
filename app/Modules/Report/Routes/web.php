@@ -18,4 +18,5 @@ Route::group(['prefix' => 'report'], function () {
     Route::post('/save', 'ReportController@save');
     Route::post('/delete', 'ReportController@delete');
     Route::get('/export', 'ReportController@exportFile');
+    Route::post('/save-project', 'ReportController@saveProject');
 });
