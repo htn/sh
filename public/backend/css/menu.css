@@ -24,7 +24,7 @@
     white-space: nowrap;
 }
 .sidebar-menu > li > a span{
-    vertical-align: middle;
+    /*    vertical-align: middle;*/
 }
 .sidebar-menu li.header {
     padding: 10px 25px 10px 15px;
@@ -62,8 +62,7 @@
 }
 .sidebar-menu .treeview-menu > li > a {
     padding: 6px 5px 6px 20px;
-    display: block;
-    font-size: 17px;
+    display: block;  
     position: relative;
     white-space: nowrap;
 }

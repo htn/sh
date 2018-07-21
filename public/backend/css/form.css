@@ -23,7 +23,7 @@ table#bodytable, table#bodytable td, table#bodytable th {
 }
 table#headertable th, table#bodytable th {
   border-top: none !important;
-  color: #000;
+  /*  color: #000;*/
 }
 table#headertable, table#headertable td:first-child, table#headertable th:first-child,
 table#bodytable, table#bodytable td:first-child, table#bodytable th:first-child {
@@ -94,6 +94,7 @@ table#headertable th.resizing {
   padding-right: 15px;
   text-transform: capitalize;
   cursor: auto;
+  font-weight: normal;
 }
 .sort_col {
   background: url(../images/alpha_asc.png);

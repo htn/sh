@@ -5,8 +5,8 @@ namespace App\Modules\Report\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Modules\Report\Exports\CollectionExport;
-use App\Modules\Report\Exports\FromViewExport;
+//use App\Modules\Report\Exports\CollectionExport;
+//use App\Modules\Report\Exports\FromViewExport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -240,25 +240,25 @@ class ReportController extends Controller {
 
     public function exportFile(Request $request) {
         $searchs = json_decode($request->input('params'), true);
-        $search_time_from = (!empty($searchs['start_time']) ? date('Y-m-d', $searchs['start_time']) : '');
-        $search_time_to = (!empty($searchs['end_time']) ? date('Y-m-d', $searchs['end_time']) : '');
+        $search_time_from = (!empty($searchs['start_time']) ? date('Y-m-d H:i:s', strtotime($searchs['start_time'])) : '');
+        $search_time_to = (!empty($searchs['end_time']) ? date('Y-m-d H:i:s', strtotime("+1 day", strtotime($searchs['end_time']))) : '');
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'WEB APPLICATION GROUP REPORT');
         $sheet->setCellValue('A2', 'REPORTER: HUY NGUYEN');
-        $reports = DB::table('report')
-                ->join('report_project', 'report_project.id', '=', 'report.projectid')
-                ->join('report_member', 'report_member.id', '=', 'report.userid')
-                ->join('report_status', 'report_status.id', '=', 'report.status')
-                ->select('report_project.name as project_name', 'report.name as task_name', 'taskid', 'report_member.name as user_name', 'start_time', 'end_time', 'report_status.name as status_name', 'note');
-        if (!empty($search_time_to)) {
-            $reports = $reports->where('start_time', '<=', $search_time_to);
-        }
+        $reports = DB::table('report as r')
+                ->join('report_project', 'report_project.id', '=', 'r.projectid')
+                ->join('report_member', 'report_member.id', '=', 'r.userid')
+                ->join('report_status', 'report_status.id', '=', 'r.status')
+                ->select('report_project.name as project_name', 'r.name as task_name', 'taskid', 'report_member.name as user_name', 'r.start_time', 'r.end_time', 'report_status.name as status_name', 'r.note');
         if (!empty($search_time_from)) {
-            $reports = $reports->where('start_time', '>=', $search_time_from);
+            $reports = $reports->where('r.time_created', '>=', $search_time_from);
         }
-        $reports = $reports->get()->toArray();
-        $reports = collect($reports)->map(function($x) {
+        if (!empty($search_time_to)) {
+            $reports = $reports->where('r.time_created', '<', $search_time_to);
+        }
+        $reports = $reports->orderBy('userid', 'asc')->get()->toArray();
+        $data = collect($reports)->map(function($x) {
             return (array) $x;
         });
         $row = 4;
@@ -273,7 +273,7 @@ class ReportController extends Controller {
         $sheet->setCellValue('I' . $row, 'Note/ Status');
         $row = 5;
         $i = 1;
-        foreach ($reports as $record) {
+        foreach ($data as $record) {
             $sheet->setCellValue('A' . $row, $i++);
             $sheet->setCellValue('B' . $row, $record['project_name']);
             $sheet->setCellValue('C' . $row, $record['task_name']);
@@ -338,7 +338,7 @@ class ReportController extends Controller {
         $writer = new Xlsx($spreadsheet);
         $writer->save("php://output");
 
-        // using laravel excel
+        // using laravel-excel, tạm thời thấy rất khó sử dụng trong trường hợp phức tạp, chỉ dễ khi export đơn giản
         //return \Maatwebsite\Excel\Facades\Excel::download(new CollectionExport(), 'export.xlsx');
         //return \Maatwebsite\Excel\Facades\Excel::download(new FromViewExport(), 'export.xlsx');
     }

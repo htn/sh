@@ -12,7 +12,7 @@
     cursor: pointer;
     border: 1px solid #bbb;
     overflow: visible;
-    font: bold 13px arial, helvetica, sans-serif;
+    font: normal 13px arial, helvetica, sans-serif;
     text-decoration: none;
     white-space: nowrap;
     color: #555;
@@ -25,11 +25,10 @@
     transition: background-color .2s ease-out;
     background-clip: padding-box; /* Fix bleeding */
     border-radius: 3px;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, .3), 
-        0 2px 2px -1px rgba(0, 0, 0, .5), 
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .15), 
+        0 2px 2px -1px rgba(0, 0, 0, .2), 
         0 1px 0 rgba(255, 255, 255, .3) inset;
-    text-shadow: 0 1px 0 rgba(255,255,255, .9);  
-
+    text-shadow: 0 1px 0 rgba(255,255,255, .9);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
