@@ -18,13 +18,13 @@
     padding: 0;
 }
 .sidebar-menu > li > a {
-    padding: 12px 5px 12px 10px;
+    padding: 12px 5px 12px 5px;
     display: block;
     position: relative;
     white-space: nowrap;
 }
 .sidebar-menu > li > a span{
-    /*    vertical-align: middle;*/
+    vertical-align: middle;
 }
 .sidebar-menu li.header {
     padding: 10px 25px 10px 15px;
@@ -44,6 +44,9 @@
     right: 10px;
     margin-top: -8px;
 }
+.sidebar-menu li.actives > .treeview-menu {
+    display: block;
+}
 .sidebar-menu li.active > .treeview-menu {
     display: block;
 }
@@ -52,16 +55,17 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    padding-left: 5px;
 }
 .sidebar-menu .treeview-menu .treeview-menu {
     padding-left: 20px;
 }
 .sidebar-menu .treeview-menu > li {
     margin: 0;
+    padding: 0;
+    border: none;
 }
 .sidebar-menu .treeview-menu > li > a {
-    padding: 6px 5px 6px 20px;
+    padding: 6px 5px 6px 25px;
     display: block;  
     position: relative;
     white-space: nowrap;
@@ -74,12 +78,18 @@
     background: #1a2226
 }
 .sidebar-menu > li > a {
-    border-left: 3px solid transparent
+    border-left: 3px solid transparent;    
 }
-.sidebar-menu > li:hover > a, .sidebar-menu > li.active > a {
+.sidebar-menu > li:not(.actives):hover > a {
     color:#fff;
     background: #1e282c;
-    border-left-color: #3c8dbc;
+    background-color: rgba(200, 200, 200, 0.2);
+}
+.sidebar-menu > li.active > a {
+    color:#fff;
+    background: #1e282c;
+    border-left-color: #009cd7;
+    box-shadow: 0 0px 1px 0 rgba(200, 200, 200, 0.2);
 }
 .sidebar-menu > li:hover > a > span.ico,
 .sidebar-menu > li.active > a > span.ico,
@@ -100,10 +110,21 @@
     text-decoration: none
 }
 .treeview-menu > li > a {
-    color: #8aa4af
+    color: #8aa4af;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    border-left: 3px solid transparent;
 }
-.treeview-menu > li.active > a,.treeview-menu > li > a:hover {
-    color: #fff
+.treeview-menu > li.active > a {
+    color: #fff;
+    border-top: 1px solid rgba(200, 200, 200, 0.1);
+    border-bottom: 1px solid rgba(200, 200, 200, 0.1);
+    border-left-color: #009cd7;
+}
+.treeview-menu > li > a:hover {
+    color: #fff;
+    background: rgba(200, 200, 200, 0.1);
+
 }
 .treeview-menu > li.active > a > span.ico,
 .treeview-menu > li > a:hover > span.ico,
@@ -112,68 +133,73 @@
     opacity: 1;
 }
 .sidebar-menu > li > .treeview-menu {
-    margin: 0 1px;
+    margin: 0;
     background: #2c3b41;
 }
 .arr {
     width: 12px !important;
     height: 12px !important;
-    background: url(../images/arrow.png) no-repeat;
+    background: url(../images/arrow.png) no-repeat center;
+}
+.tit {
+    text-transform: capitalize;
 }
 .ico {
     vertical-align: middle;
     display: inline-block;
     width: 20px;
-    height: 20px;
+    height: 22px;
     opacity: 0.6;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .ico_config {
-    background: url(../images/settings-9-18.png) no-repeat;
+    background: url(../images/settings-9-18.png) no-repeat center;
 }
 .ico_system {
-    background: url(../images/system_sb.png) no-repeat;
+    background: url(../images/system_sb.png) no-repeat center;
 }
 .ico_user {
-    background: url(../images/user_sb.png) no-repeat;
+    background: url(../images/user_sb.png) no-repeat center;
 }
 .ico_group {
-    background: url(../images/group_sb.png) no-repeat;
+    background: url(../images/group_sb.png) no-repeat center;
 }
 .ico_customer {
-    background: url(../images/conference_sb.png) no-repeat;
+    background: url(../images/conference_sb.png) no-repeat center;
 }
 .ico_product {
-    background: url(../images/product_sb.png) no-repeat;
+    background: url(../images/product_sb.png) no-repeat center;
 }
 .ico_product_category {
-    background: url(../images/product_category_sb.png) no-repeat;
+    background: url(../images/product_category_sb.png) no-repeat center;
 }
 .ico_product_detail {
-    background: url(../images/product_detail_sb.png) no-repeat;
+    background: url(../images/product_detail_sb.png) no-repeat center;
 }
 .ico_pages {
-    background: url(../images/page_sb.png) no-repeat;
+    background: url(../images/page_sb.png) no-repeat center;
 }
 .ico_pages_child {
-    background: url(../images/page_child_sb.png) no-repeat;
+    background: url(../images/page_child_sb.png) no-repeat center;
 }
 .ico_menu_child {
-    background: url(../images/menu_child_sb.png) no-repeat;
+    background: url(../images/menu_child_sb.png) no-repeat center;
 }
 .ico_menu_news {
-    background: url(../images/mn_news.png) no-repeat;
+    background: url(../images/mn_news.png) no-repeat center;
 }
 .ico_menu_owner {
-    background: url(../images/mn_owner.png) no-repeat;
+    background: url(../images/mn_owner.png) no-repeat center;
 }
 .ico_menu_introduce {
-    background: url(../images/mn_introduce.png) no-repeat;
+    background: url(../images/mn_introduce.png) no-repeat center;
 }
 .ico_menu_recruitment {
-    background: url(../images/mn_recruitment.png) no-repeat;
+    background: url(../images/mn_recruitment.png) no-repeat center;
 }
 .ico_menu_contact {
-    background: url(../images/mn_contact.png) no-repeat;
+    background: url(../images/mn_contact.png) no-repeat center;
 }
 .sidebar-menu li.active > a > .arr, .sidebar-menu li.active > a > .pull-right-container > .arr {
     -webkit-transform: rotate(-90deg);

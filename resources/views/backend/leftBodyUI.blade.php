@@ -2,34 +2,39 @@
 <aside class="main-sidebar">
     <section class="sidebar">
         <ul class="sidebar-menu">
-            <li class="treeview ">
+            <li class="treeview actives">
                 <a href="#">
                     <span class="ico ico_system">&nbsp;</span> <span class="tit">Hệ Thống</span>
                     <span class="arr pull-right" style="display: block;"></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="">
-                        <a href="/sysconfig">
+                    <li class="{{ request()->is('sysconfig*') ? 'active' : '' }}">
+                        <a href="{{ url("/sysconfig") }}">
                             <span class="ico ico_config"></span> <span class="tit">Cấu hình</span>
                         </a>
                     </li>
-                    <li class="">
-                        <a href="/sysgroup">
+                    <li class="{{ request()->is('sysgroup*') ? 'active' : '' }}">
+                        <a href="{{ url("/sysgroup") }}">
                             <span class="ico ico_group"></span> <span class="tit">Nhóm quyền</span>
                         </a>
                     </li>
-                    <li class="">
-                        <a href="/sysuser">
+                    <li class="{{ request()->is('sysuser*') ? 'active' : '' }}">
+                        <a href="{{ url("/sysuser") }}">
                             <span class="ico ico_user"></span> <span class="tit">Tài khoản</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="active">
-                <a href="/report">
-                    <span class="ico ico_menu_news"></span> <span class="tit">Báo cáo ngày</span>
+            <li class="{{ request()->is('report*') ? 'active' : '' }}">
+                <a href="{{ url("/report") }}">
+                    <span class="ico ico_pages"></span> <span class="tit">Báo cáo ngày</span>
                 </a>
-            </li>            
+            </li>
+            <li class="{{ request()->is('test*') ? 'active' : '' }}">
+                <a href="{{ url("/test") }}">
+                    <span class="ico ico_pages"></span> <span class="tit"><?php print_r(request()->path()); ?></span>
+                </a>
+            </li>     
         </ul>
     </section>
 </aside>

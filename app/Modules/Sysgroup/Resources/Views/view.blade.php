@@ -5,15 +5,17 @@
 <link href="{{asset('backend/plugins/multiple-select/multiple-select.css')}}" rel="stylesheet">
 <link href="{{asset('backend/css/form.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('backend/css/button.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{asset('backend/plugins/jstree/themes/default/style.min.css')}}" rel="stylesheet" type="text/css" />
 <script src="{{asset('backend/plugins/multiple-select/multiple-select.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
+<script type="text/javascript" src="{{asset('backend/plugins/jstree/jstree.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('backend/plugins/view.js')}}"></script>
 <script type="text/javascript">
 $(document).ready(function () {
     $.View({
-        _ns: 'report',
-        _ns_full: 'http://localhost/cds/public/report',
+        _ns: 'sysgroup',
+        _ns_full: '{{url("/sysgroup")}}',
         _form_default: '#main-form'
     });
     $.View.init(true, function () {
@@ -34,7 +36,7 @@ $(document).ready(function () {
         $.View.blockUI("#ui_grid", true);
         $.ajax({
             type: "POST",
-            url: 'report/edit',
+            url: 'sysgroup/edit',
             data: {
 
             }
@@ -50,7 +52,7 @@ $(document).ready(function () {
     // Sự kiện xuất excel
     $('#export-grid').click(function () {
         //composer require maatwebsite/excel
-        window.location = 'report/export?params=' + getSearch(true);
+        window.location = 'sysgroup/export?params=' + getSearch(true);
     });
     // Sự kiện click nút xóa
     $('#delete-grid').click(function () {
@@ -69,7 +71,7 @@ $(document).ready(function () {
         $.View.blockUI("#ui_grid", true);
         $.ajax({
             type: "POST",
-            url: 'report/edit',
+            url: 'sysgroup/edit',
             data: {
                 id: id
             }
@@ -174,14 +176,14 @@ $(document).ready(function () {
     });
     $('#save-project').click(function () {
         var name = $('#project_name').val().trim();
-        if(name.length ===0) {
+        if (name.length === 0) {
             alert('Project name can not be empty');
             return false;
         }
         $.View.blockUI("#ui_grid", true);
         $.ajax({
             type: "POST",
-            url: 'report/save-project',
+            url: 'sysgroup/save-project',
             data: {
                 name: name
             }
@@ -207,13 +209,13 @@ $(document).ready(function () {
         'show.bs.modal': function () {
             var zIndex = 1040 + (10 * $('.modal:visible').length);
             $(this).css('z-index', zIndex);
-            setTimeout(function() {
+            setTimeout(function () {
                 $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
             }, 0);
         },
-        'hidden.bs.modal': function() {
+        'hidden.bs.modal': function () {
             if ($('.modal:visible').length > 0) {
-                setTimeout(function() {
+                setTimeout(function () {
                     $(document.body).addClass('modal-open');
                 }, 0);
             }
@@ -228,7 +230,7 @@ function loadGrid(page) {
     $.View.blockUI("#ui_grid", true);
     $.ajax({
         type: "POST",
-        url: 'report/list',
+        url: 'sysgroup/list',
         data: {
             page: page,
             search: data,
@@ -302,7 +304,7 @@ function deletes(ids) {
     $.View.blockUI("#ui_grid", true);
     $.ajax({
         type: "POST",
-        url: 'report/delete',
+        url: 'sysgroup/delete',
         data: {
             ids: ids
         }
