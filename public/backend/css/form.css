@@ -94,7 +94,7 @@ table#headertable th.resizing {
   padding-right: 15px;
   text-transform: capitalize;
   cursor: auto;
-  font-weight: normal;
+  font-weight: 450;
 }
 .sort_col {
   background: url(../images/alpha_asc.png);
