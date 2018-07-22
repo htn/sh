@@ -5,6 +5,7 @@ namespace App\Modules\Sysgroup\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Modules\Sysgroup\Models\SysGroup;
 
 class SysGroupController extends Controller {
 
@@ -221,6 +222,12 @@ class SysGroupController extends Controller {
     }
 
     public function edit(Request $request) {
+        $model = new SysGroup();
+        $group = $model->tree_menu_pure();
+        echo '<pre>';
+        print_r($group);
+        die;
+
         $id = $request->input('id');
         $record = new \stdClass();
         if (!empty($id)) {
