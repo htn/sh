@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['prefix' => 'sysgroup'], function () {    
+Route::group(['prefix' => 'sysgroup'], function () {
     Route::get('/', 'SysGroupController@index');
     Route::post('/list', 'SysGroupController@grid');
     Route::post('/edit', 'SysGroupController@edit');

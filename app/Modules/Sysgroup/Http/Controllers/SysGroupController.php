@@ -223,11 +223,11 @@ class SysGroupController extends Controller {
 
     public function edit(Request $request) {
         $model = new SysGroup();
-        $group = $model->tree_menu_pure();
-        echo '<pre>';
-        print_r($group);
+        $menu = $model->tree_menu_pure();
+        /*echo '<pre>';
+        print_r($menu);
         die;
-
+*/
         $id = $request->input('id');
         $record = new \stdClass();
         if (!empty($id)) {
@@ -236,6 +236,7 @@ class SysGroupController extends Controller {
         $data = array(
             'id' => $id,
             'record' => $record,
+            'menu'=>$menu,
             'cells' => $this->init()
         );
         return view('sysgroup::form', $data);

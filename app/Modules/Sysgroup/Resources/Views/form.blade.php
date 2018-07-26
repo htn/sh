@@ -69,7 +69,7 @@
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="optradio" disabled>Option 3
                                     </label>
-                                </div> 
+                                </div>
                                 ';
                         } else if ($type == 'date') {
                             if (!empty($val)) {
@@ -97,6 +97,9 @@
     </div>
 </form>
 <script type="text/javascript">
+    var menu = <?=str_replace(['\\', '"{', '}"',',"children":[]'],['', '{', "}",''],json_encode($menu));?>;
+    console.log(menu);
+    console.log(JSON.stringify(menu));
     $(document).ready(function () {
         $('#start_time').daterangepicker({
             autoApply: true,
@@ -198,11 +201,33 @@
                         ]
                     }
                 ]
+            },{
+                "id": "111",
+                "text": "Hệ thống",
+                "parent": 0,
+                "state": {"opened": true},
+                "children": [
+                    {
+                        "id": "112",
+                        "text": "Cấu hình"
+                    },
+                    {
+                        "id": "113",
+                        "text": "Nhóm quyền"
+                    },
+                    {
+                        "id": "114",
+                        "text": "Thành viên",
+                        "state": {
+                            selected: true
+                        }
+                    }
+                ]
             }
         ];
         $("#Tree").jstree({
             "core": {
-                "data": data1,
+                "data": menu,
                 "themes": {
                     "url": false,
                     "icons": false

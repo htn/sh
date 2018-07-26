@@ -14,20 +14,17 @@ class SysGroup extends Model {
     function tree_menu_pure() {
         $nodeList = array();
         $tree = array();
-        DB::setFetchMode(\PDO::FETCH_ASSOC);
-        $rs = DB::table('sys_menu')->where('is_delete', 0)->orderBy('parent')->get()->toArray();
-        DB::setFetchMode(\PDO::FETCH_CLASS);
-        echo '<pre>';
-        print_r($rs);
-        die;
+        $rs=array_map(function($item){
+            return (array) $item;
+        },DB::table('sys_menu')->select('id','name as text','parent as parents','params', DB::raw("'{\"opened\": true}' as state"))->where('is_delete', 0)->orderBy('parent')->get()->toArray());
         foreach ($rs as $row) {
             $nodeList[$row['id']] = array_merge($row, array('children' => array()));
         }
         foreach ($nodeList as $nodeId => &$node) {
-            if (!$node['parent'] || !array_key_exists($node['parent'], $nodeList)) {
+            if (!$node['parents'] || !array_key_exists($node['parents'], $nodeList)) {
                 $tree[] = &$node;
             } else {
-                $nodeList[$node['parent']]['children'][] = &$node;
+                $nodeList[$node['parents']]['children'][] = &$node;
             }
         }
         unset($node);
