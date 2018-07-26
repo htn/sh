@@ -243,16 +243,16 @@
     });
     function dequy(obj) {
         $.each(obj, function (key, value) {
-            if (value['children'].length > 0) {              
+            if (value['children'].length > 0) {
                 dequy(value['children']);
             }
             if (value['params'].length > 0) {
                 var tmp = value['params'].split(',');
                 for (var i in tmp) {
-                    value['children'].push({"id": tmp[i], "text": tmp[i]});
+                    value['children'].push({"id": value['id'] + "_" + tmp[i], "text": tmp[i]});
                 }
             }
-        });        
+        });
     }
     function save() {
         var idList = [];
