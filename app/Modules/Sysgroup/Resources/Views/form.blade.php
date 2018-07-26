@@ -97,7 +97,8 @@
     </div>
 </form>
 <script type="text/javascript">
-    var menu = <?=str_replace(['\\', '"{', '}"',',"children":[]'],['', '{', "}",''],json_encode($menu));?>;
+    //var menu = <?= str_replace(['\\', '"{', '}"', ',"children":[]'], ['', '{', "}", ''], json_encode($menu)); ?>;
+    var menu = <?= str_replace(['\\', '"{', '}"'], ['', '{', "}"], json_encode($menu)); ?>;
     console.log(menu);
     console.log(JSON.stringify(menu));
     $(document).ready(function () {
@@ -201,7 +202,7 @@
                         ]
                     }
                 ]
-            },{
+            }, {
                 "id": "111",
                 "text": "Hệ thống",
                 "parent": 0,
@@ -225,6 +226,7 @@
                 ]
             }
         ];
+        dequy(menu);
         $("#Tree").jstree({
             "core": {
                 "data": menu,
@@ -239,6 +241,19 @@
             "plugins": ["checkbox"]
         });
     });
+    function dequy(obj) {
+        $.each(obj, function (key, value) {
+            if (value['children'].length > 0) {              
+                dequy(value['children']);
+            }
+            if (value['params'].length > 0) {
+                var tmp = value['params'].split(',');
+                for (var i in tmp) {
+                    value['children'].push({"id": tmp[i], "text": tmp[i]});
+                }
+            }
+        });        
+    }
     function save() {
         var idList = [];
         var jsonNodes = $('#Tree').jstree(true).get_json('#', {flat: true});
