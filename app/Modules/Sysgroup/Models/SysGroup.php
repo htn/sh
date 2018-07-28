@@ -14,9 +14,9 @@ class SysGroup extends Model {
     function tree_menu_pure() {
         $nodeList = array();
         $tree = array();
-        $rs=array_map(function($item){
+        $rs = array_map(function($item) {
             return (array) $item;
-        },DB::table('sys_menu')->select('id','name as text','parent as parents','params', DB::raw("'{\"opened\": true}' as state"))->where('is_delete', 0)->orderBy('parent')->get()->toArray());
+        }, DB::table('sys_menu')->select('id', 'name as text', 'parent as parents', 'params', DB::raw("'{\"opened\": true}' as state"))->where('is_delete', 0)->orderBy('parent')->get()->toArray());
         foreach ($rs as $row) {
             $nodeList[$row['id']] = array_merge($row, array('children' => array()));
         }

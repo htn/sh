@@ -34,7 +34,25 @@
                 <a href="{{ url("/test") }}">
                     <span class="ico ico_pages"></span> <span class="tit"><?php print_r(request()->path()); ?></span>
                 </a>
-            </li>     
+            </li>  
+            <li class="treeview">
+                <a href="#">
+                    <span class="ico ico_system">&nbsp;</span> <span class="tit">Sản phẩm</span>
+                    <span class="arr pull-right" style="display: block;"></span>
+                </a>
+                <ul class="treeview-menu">                   
+                    <li class="{{ request()->is('productcatalog*') ? 'active' : '' }}">
+                        <a href="{{ url("/productcatalog") }}">
+                            <span class="ico ico_group"></span> <span class="tit">Danh mục sản phẩm</span>
+                        </a>
+                    </li>
+                    <li class="{{ request()->is('product*') ? 'active' : '' }}">
+                        <a href="{{ url("/product") }}">
+                            <span class="ico ico_user"></span> <span class="tit">Sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </section>
 </aside>
