@@ -17,16 +17,16 @@
 <script type="text/javascript" src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
 <script type="text/javascript" src="{{asset('backend/plugins/view.js')}}"></script>
 <script type="text/javascript">
-$(document).ready(function () {
-    $.View({
-        _ns: 'productcatalog',
-        _ns_full: 'http://localhost/cds/public/productcatalog',
-        _form_default: '#main-form'
-    });
-    $.View.init(true, function () {
+    $(document).ready(function () {
+        $.View({
+            _ns: 'productcatalog',
+            _ns_full: 'http://localhost/cds/public/productcatalog',
+            _form_default: '#main-form'
+        });
+        $.View.init(true, function () {
         //console.log('Started ...');
     });
-    load_tree(1);
+        load_tree(1);
     // Sự kiện click nút refresh
     $('#refresh-grid').click(function () {
         resetDataFilter();
@@ -231,7 +231,7 @@ function load_tree(page) {
         //selectMode: 3,
         table: {
             indentation: 20, // indent 20px per node level
-            nodeColumnIdx: 2, // render the node title into the 2nd column
+            nodeColumnIdx: 4, // render the node title into the 2nd column
             checkboxColumnIdx: 0  // render the checkboxes into the 1st column
         },
         source: {
@@ -340,26 +340,26 @@ function load_tree(page) {
             closeBtn: true,
             btn: ['Confirm', 'Cancel'],
             call: [
-                function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'productcatalog/delete',
-                        data: {ids: ids.join(',')}
-                    }).done(function (r) {
-                        if (r === 'exist') {
-                            showAlert('Error', 'Dữ liệu đang được sử dụng bên Chi Tiết Tour, vui lòng xóa Chi Tiết Tour trước');
-                            return false;
-                        }
-                        reload_tree(1);
-                        load_pagination(1);
-                        showAlert('Error', 'msg_delete_success');
-                    }).fail(function (x) {
-                        showAlert('Error', 'msg_delete_fail');
-                    });
-                },
-                function () {
-                    $.dialogbox.close();
-                }
+            function () {
+                $.ajax({
+                    type: 'POST',
+                    url: 'productcatalog/delete',
+                    data: {ids: ids.join(',')}
+                }).done(function (r) {
+                    if (r === 'exist') {
+                        showAlert('Error', 'Dữ liệu đang được sử dụng bên Chi Tiết Tour, vui lòng xóa Chi Tiết Tour trước');
+                        return false;
+                    }
+                    reload_tree(1);
+                    load_pagination(1);
+                    showAlert('Error', 'msg_delete_success');
+                }).fail(function (x) {
+                    showAlert('Error', 'msg_delete_fail');
+                });
+            },
+            function () {
+                $.dialogbox.close();
+            }
             ]
         });
     });
@@ -465,65 +465,65 @@ function showConfirm(title, content, action) {
 </script>
 
 <style type="text/css">
-    .filter-data {
-        border-radius: 0;
-    }
-    .ms-choice {
-        height: 33px;
-        border-radius: 0;
-        border-color: #ced4da;
-        outline: none;
-    }
-    .ms-choice span {
-        top: 3px;
-    }
-    .ms-choice div {
-        top: 4px;
-    }
-    .ms-drop {
-        border-radius: 0;
-        border-color: #ced4da;
-    }
-    .ms-drop>ul>li>label>input{
-        margin-right: 5px;
-    }
-    .modal-header {
-        padding: 0.3rem 1rem;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border-bottom: 2px solid #009cd7;
-    }
-    .modal-header .modal-title {
-        color: #fff;
-    }
-    .modal-header .close {
-        padding: 1.3rem 1rem 1rem 1rem;
-    }
-    .modal-content {
-        border-radius: 0;
-        border-color: #009cd7;
-    }
-    .modal-footer {
-        padding: 0.8rem 1rem;
-    }
-    .rred {
-        color: red;
-    }
+.filter-data {
+    border-radius: 0;
+}
+.ms-choice {
+    height: 33px;
+    border-radius: 0;
+    border-color: #ced4da;
+    outline: none;
+}
+.ms-choice span {
+    top: 3px;
+}
+.ms-choice div {
+    top: 4px;
+}
+.ms-drop {
+    border-radius: 0;
+    border-color: #ced4da;
+}
+.ms-drop>ul>li>label>input{
+    margin-right: 5px;
+}
+.modal-header {
+    padding: 0.3rem 1rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom: 2px solid #009cd7;
+}
+.modal-header .modal-title {
+    color: #fff;
+}
+.modal-header .close {
+    padding: 1.3rem 1rem 1rem 1rem;
+}
+.modal-content {
+    border-radius: 0;
+    border-color: #009cd7;
+}
+.modal-footer {
+    padding: 0.8rem 1rem;
+}
+.rred {
+    color: red;
+}
 
-    #treetable tbody>tr>td:nth-child(1),
-    #treetable tbody>tr>td:nth-child(2),
-    #treetable tbody>tr>td:nth-child(3),
-    #treetable tbody>tr>td:nth-child(6),
-    #treetable tbody>tr>td:nth-child(7),
-    #treetable tbody>tr>td:nth-child(9){
-        text-align: center !important;
-    }
-    #treetable .order {
-        width: 40px;
-    }
-    .catalog-icon-edit,.catalog-icon-delete {
-        cursor: pointer;
-    }
+#treetable tbody>tr>td:nth-child(1),
+#treetable tbody>tr>td:nth-child(2),
+#treetable tbody>tr>td:nth-child(3),
+#treetable tbody>tr>td:nth-child(6),
+#treetable tbody>tr>td:nth-child(7),
+#treetable tbody>tr>td:nth-child(9){
+    text-align: center !important;
+}
+#treetable .order {
+    width: 40px;
+}
+.catalog-icon-edit,.catalog-icon-delete {
+    cursor: pointer;
+}
 </style>
 
 <div class="box ui_grid clearfix" id="ui_grid">
@@ -562,7 +562,7 @@ function showConfirm(title, content, action) {
     <div class="box_body body_grid" id="grid_body">
         <div class="inner-container" style="overflow-y: auto;">
             <div class="table-body" id="body_grid">
-                <table id="treetable" class="table" style="width: 100%;">                   
+                <table id="treetable" class="table" style="width: 100%;">
                     <thead>
                         <tr>
                             <th width="40" class="text-center"><span id="ckall" class="fancytree-checkbox"></span></th>
@@ -572,7 +572,7 @@ function showConfirm(title, content, action) {
                             <th>Tên</th>
                             <th class="text-center">ID</th>
                             <th class="text-center">Status</th>
-                            <th>Vị trí &nbsp; <a href="#" id="set_order" style="border: 1px solid #ccc; padding: 1px 7px 0px 7px; border-radius: 3px;"><img style="vertical-align: top;" src="{{ asset('backend/images/huy_avatar.png') }}"></a></th>
+                            <th style="vertical-align: middle;">Vị trí &nbsp; <a href="#" id="set_order" style=""><img style="vertical-align: middle;" src="{{asset('backend/images/save.png')}}"></a></th>
                             <th class="text-center">Hình ảnh</th>
                             <th>Mô tả</th>
                             <th></th>

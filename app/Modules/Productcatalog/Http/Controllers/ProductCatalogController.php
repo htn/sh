@@ -13,6 +13,36 @@ class ProductCatalogController extends Controller {
         return view('productcatalog::view', compact('header'));
     }
 
+    public function edit(Request $request) {
+        $id = $request->input('id');
+        $record = new \stdClass();
+        if (!empty($id)) {
+            $record = DB::table('tours_categories')->where('id', $id)->first();
+        }
+        $data = array(
+            'id' => $id,
+            'record' => $record,
+            'cells' => $this->init()
+        );
+        return view('productcatalog::form', $data);
+    }
+
+    function create_category_option(&$cat_tree, &$option_str, $option_selected = 0, $prefix_str = '') {
+        foreach ($cat_tree as $key => &$value) {
+            if ($value['id'] == $option_selected) {
+                $selected = 'selected';
+            } else {
+                $selected = '';
+            }
+            $option_str[$value['id']] = $prefix_str . $value['name'];
+            if (!empty($value['children'])) {
+                $this->create_category_option($value['children'], $option_str, $option_selected, $prefix_str . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+            } else {
+                unset($value['children']);
+            }
+        }
+    }
+
     public function loadCatalog(Request $request) {
         if ($request->ajax()) {
             $page = $request->input('page');
@@ -22,18 +52,9 @@ class ProductCatalogController extends Controller {
             if ($start < 0) {
                 $start = 0;
             }
-            //$results = $this->get_data_pagination(array(), $search, $limit, $start);
-//            $rs = DB::table('tours_categories')->select([DB::raw('SQL_CALC_FOUND_ROWS tours_categories.*')])
-//                            ->offset($start)
-//                            ->limit($limit)
-//                            ->get()->toArray();
-
             $items = DB::table('tours_categories')->select('tours_categories.*')->where('parent', 0);
             $items = $items->paginate(3);
-
             $rs = $items->toArray();
-//            echo '<pre>';
-//            print_r($rs);
             $tree_category_full = $this->tree_category_pure();
             $arr = [];
             foreach ($rs['data'] as $item) {
@@ -46,9 +67,6 @@ class ProductCatalogController extends Controller {
                 }
             }
             $this->set_sub($newtree);
-            //return json_encode($newtree);
-            //$datafancytree = json_encode($newtree);
-            //return $datafancytree;
             $data = json_encode(array(
                 'l' => $newtree,
                 'p' => view('report::pagination', compact('items', 'cols'))->render()
@@ -59,9 +77,9 @@ class ProductCatalogController extends Controller {
 
     function get_data_pagination($arr_sort = array(), $arr_search = array(), $limit = 4, $start = 0, $both = true) {
         $rs = DB::table('tours_categories')->select([DB::raw('SQL_CALC_FOUND_ROWS tours_categories.*')])
-                        ->offset($start)
-                        ->limit($limit)
-                        ->get()->toArray();
+        ->offset($start)
+        ->limit($limit)
+        ->get()->toArray();
         $total = DB::select(DB::raw('SELECT FOUND_ROWS() AS total'))[0]->total;
         return array('num' => $total, 'rs' => $rs);
     }
@@ -200,6 +218,11 @@ class ProductCatalogController extends Controller {
     }
 
     function init($grid = false) {
+
+        $option_categories =  array('0'=>'Root');
+        $tree_category_full = $this->tree_category_pure();
+        $this->create_category_option($tree_category_full, $option_categories) ;
+
         $_sample_data = array(
             '1' => array(
                 'key' => 'name',
@@ -212,12 +235,28 @@ class ProductCatalogController extends Controller {
                 'data' => '', // du lieu neu la select box
                 'default' => '', // du lieu mac dinh
                 'form' => true, // hien thi tren form,
-                'label' => 'Task name', // hien thi tren form,
+                'label' => 'Ten', // hien thi tren form,
                 'required' => true, // bat buoc nhap lieu
                 'message' => 'Name can not be empty', // bat buoc phai nhap lieu
-                'col' => 'col-md-12', // chieu rong cua cot tren form
+                'col' => 'col-md-6', // chieu rong cua cot tren form
             ),
             '2' => array(
+                'key' => 'parent',
+                'table' => 'main', // alias cua bang
+                'type' => 'select', //text/number/date/datetime/time/checkbox/radio/select
+                'grid' => false, // hien thi tren luoi
+                'gwidth' => '500', // chieu rong cot tren luoi
+                'gfilter' => 'name', // cot muon loc
+                'galign' => 'left', // canh le
+                'data' => $option_categories, // du lieu neu la select box
+                'default' => '0', // du lieu mac dinh
+                'form' => true, // hien thi tren form,
+                'label' => 'Danh muc cha', // hien thi tren form,
+                'required' => true, // bat buoc nhap lieu
+                'message' => 'Name can not be empty', // bat buoc phai nhap lieu
+                'col' => 'col-md-6', // chieu rong cua cot tren form
+            ),
+            '3' => array(
                 'key' => 'time_created',
                 'table' => 'main', // alias cua bang
                 'type' => 'datetime', //text/number/date/datetime/time/checkbox/radio/select

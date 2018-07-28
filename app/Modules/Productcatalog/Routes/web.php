@@ -14,7 +14,6 @@
 Route::group(['prefix' => 'productcatalog'], function () {
     Route::get('/', 'ProductCatalogController@index');
     Route::post('/list', 'ProductCatalogController@grid');
-    Route::post('/load-pagination', 'ProductCatalogController@loadPagination');
     Route::post('/load-catalog', 'ProductCatalogController@loadCatalog');
     Route::post('/edit', 'ProductCatalogController@edit');
     Route::post('/save', 'ProductCatalogController@save');
