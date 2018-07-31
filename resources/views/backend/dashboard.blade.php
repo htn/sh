@@ -12,16 +12,16 @@
         <script src="{{ asset('plugins/bootstrap-4.1.1/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('backend/plugins/gui.js') }}"></script>
         <script type="text/javascript">
-var offleft = 291;
-var path_js = '';
-$(document).ready(function () {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $(document.body).gui();
-});
+        var offleft = 291;
+        var path_js = '';
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $(document.body).gui();
+        });
         </script>
     </head>
     <body style="overflow: hidden;">

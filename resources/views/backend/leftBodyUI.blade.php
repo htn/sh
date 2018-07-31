@@ -1,6 +1,10 @@
 <link href="{{ asset('backend/css/menu.css') }}" rel="stylesheet" type="text/css" />
 <aside class="main-sidebar">
     <section class="sidebar">
+        <?php
+        echo '<pre>';
+        print_r($mainsidebarmenu);
+        ?>
         <ul class="sidebar-menu">
             <li class="treeview actives">
                 <a href="#">
