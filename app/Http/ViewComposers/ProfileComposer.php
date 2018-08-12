@@ -30,15 +30,11 @@ class ProfileComposer {
         $menu_tree = $this->tree_menu_pure(); // Menu dạng cây
         $permission = $this->get_permission($groups); // Quyền của user trên cây menu
         $this->tree_menu_route_permission($menu_tree, $permission, $parent, $path, $route_path);
-        
-        echo '<pre>';
-        print_r($path);
-        print_r($route_path);
-        
         $menu_html = ''; // Menu dạng html
         $cm = request()->path(); // current menu (name controller);
         $route_path['home'] = '0'; // home do not want permission
-        $rm = $route_path[$cm]; // path to menu
+        $rm = array_filter(explode(',', $route_path[$cm])); // mang chua route toi menu hien tai
+        // echo '<pre>'; print_r($rm); die;
         $this->create_menu_html($menu_tree, $cm, $rm, $menu_html); // Lấy menu dạng html
         $this->menu = $menu_html;
     }
@@ -136,8 +132,8 @@ class ProfileComposer {
                     $classicon = $item['classicon'];
                 }
                 if (!empty($item['children'])) {
-                    if (strpos($rm, "," . $item['id'] . ",") !== FALSE) {
-                        $active = ' active';
+                    if(in_array($item['id'], $rm)) {
+                        $active = ' actives ';
                         $style = '';
                     } else {
                         $active = '';
