@@ -1,62 +1,59 @@
 <link href="{{ asset('backend/css/menu.css') }}" rel="stylesheet" type="text/css" />
 <aside class="main-sidebar">
-    <section class="sidebar">
-        <?php
-        echo '<pre>';
-        print_r($mainsidebarmenu);
-        ?>
+    <section class="sidebar">      
         <ul class="sidebar-menu">
-            <li class="treeview actives">
-                <a href="#">
-                    <span class="ico ico_system">&nbsp;</span> <span class="tit">Hệ Thống</span>
-                    <span class="arr pull-right" style="display: block;"></span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ request()->is('sysconfig*') ? 'active' : '' }}">
-                        <a href="{{ url("/sysconfig") }}">
-                            <span class="ico ico_config"></span> <span class="tit">Cấu hình</span>
-                        </a>
-                    </li>
-                    <li class="{{ request()->is('sysgroup*') ? 'active' : '' }}">
-                        <a href="{{ url("/sysgroup") }}">
-                            <span class="ico ico_group"></span> <span class="tit">Nhóm quyền</span>
-                        </a>
-                    </li>
-                    <li class="{{ request()->is('sysuser*') ? 'active' : '' }}">
-                        <a href="{{ url("/sysuser") }}">
-                            <span class="ico ico_user"></span> <span class="tit">Tài khoản</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="{{ request()->is('report*') ? 'active' : '' }}">
-                <a href="{{ url("/report") }}">
-                    <span class="ico ico_pages"></span> <span class="tit">Báo cáo ngày</span>
-                </a>
-            </li>
-            <li class="{{ request()->is('test*') ? 'active' : '' }}">
-                <a href="{{ url("/test") }}">
-                    <span class="ico ico_pages"></span> <span class="tit"><?php print_r(request()->path()); ?></span>
-                </a>
-            </li>  
-            <li class="treeview">
-                <a href="#">
-                    <span class="ico ico_system">&nbsp;</span> <span class="tit">Sản phẩm</span>
-                    <span class="arr pull-right" style="display: block;"></span>
-                </a>
-                <ul class="treeview-menu">                   
-                    <li class="{{ request()->is('productcatalog*') ? 'active' : '' }}">
-                        <a href="{{ url("/productcatalog") }}">
-                            <span class="ico ico_group"></span> <span class="tit">Danh mục sản phẩm</span>
-                        </a>
-                    </li>
-                    <li class="{{ request()->is('product*') ? 'active' : '' }}">
-                        <a href="{{ url("/product") }}">
-                            <span class="ico ico_user"></span> <span class="tit">Sản phẩm</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            <?= $mainsidebarmenu; ?>
+            <!--            <li class="treeview actives">
+                            <a href="#">
+                                <span class="ico ico_system">&nbsp;</span> <span class="tit">Hệ Thống</span>
+                                <span class="arr pull-right" style="display: block;"></span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="{{ request()->is('sysconfig*') ? 'active' : '' }}">
+                                    <a href="{{ url("/sysconfig") }}">
+                                        <span class="ico ico_config"></span> <span class="tit">Cấu hình</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->is('sysgroup*') ? 'active' : '' }}">
+                                    <a href="{{ url("/sysgroup") }}">
+                                        <span class="ico ico_group"></span> <span class="tit">Nhóm quyền</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->is('sysuser*') ? 'active' : '' }}">
+                                    <a href="{{ url("/sysuser") }}">
+                                        <span class="ico ico_user"></span> <span class="tit">Tài khoản</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{{ request()->is('report*') ? 'active' : '' }}">
+                            <a href="{{ url("/report") }}">
+                                <span class="ico ico_pages"></span> <span class="tit">Báo cáo ngày</span>
+                            </a>
+                        </li>
+                        <li class="{{ request()->is('test*') ? 'active' : '' }}">
+                            <a href="{{ url("/test") }}">
+                                <span class="ico ico_pages"></span> <span class="tit"><?php print_r(request()->path()); ?></span>
+                            </a>
+                        </li>  
+                        <li class="treeview">
+                            <a href="#">
+                                <span class="ico ico_system">&nbsp;</span> <span class="tit">Sản phẩm</span>
+                                <span class="arr pull-right" style="display: block;"></span>
+                            </a>
+                            <ul class="treeview-menu">                   
+                                <li class="{{ request()->is('productcatalog*') ? 'active' : '' }}">
+                                    <a href="{{ url("/productcatalog") }}">
+                                        <span class="ico ico_group"></span> <span class="tit">Danh mục sản phẩm</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->is('product*') ? 'active' : '' }}">
+                                    <a href="{{ url("/product") }}">
+                                        <span class="ico ico_user"></span> <span class="tit">Sản phẩm</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>-->
         </ul>
     </section>
 </aside>

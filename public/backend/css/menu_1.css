@@ -56,6 +56,9 @@
     padding: 0;
     margin: 0;
 }
+.sidebar-menu .treeview-menu .treeview-menu {
+    padding-left: 20px;
+}
 .sidebar-menu .treeview-menu > li {
     margin: 0;
     padding: 0;
@@ -63,12 +66,6 @@
 }
 .sidebar-menu .treeview-menu > li > a {
     padding: 6px 5px 6px 25px;
-    display: block;  
-    position: relative;
-    white-space: nowrap;
-}
-.sidebar-menu .treeview-menu .treeview-menu > li > a {
-    padding: 6px 5px 6px 50px;
     display: block;  
     position: relative;
     white-space: nowrap;

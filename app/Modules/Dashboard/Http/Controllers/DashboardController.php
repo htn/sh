@@ -14,7 +14,7 @@ class DashboardController extends Controller {
         if ($request->ajax()) {
             
         }
-        return view('dashboard::view', compact('items', 'cols', 'header'));
+        return view('dashboard::fulldashboard', compact('items', 'cols', 'header'));
     }
 
 }
