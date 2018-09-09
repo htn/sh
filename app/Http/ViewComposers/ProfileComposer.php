@@ -155,7 +155,6 @@ class ProfileComposer {
                     $html .= '<li class = "' . $active . '">
                     <a href = "' . $item['route'] . '">
                     <span class = "ico ' . $classicon . '"></span> <span class="tit">' . $item['name'] . '</span>
-                    <!--<small class = "label pull-right bg-yellow">12</small>-->
                     </a>
                     </li>';
                 }
